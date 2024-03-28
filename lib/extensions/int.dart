@@ -1,0 +1,4 @@
+extension SmartpayInt on int {
+
+
+}
