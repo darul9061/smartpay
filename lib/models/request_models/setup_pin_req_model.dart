@@ -1,12 +1,12 @@
-class VerificationScreenReqModel {
+class SetupPinScreenReqModel {
 
   final String email;
 
   final int token;
 
-  VerificationScreenReqModel({required this.email, required this.token}); 
+  SetupPinScreenReqModel({required this.email, required this.token}); 
 
-  // VerificationScreenReqModel.fromJson(Map<String, dynamic> json) {
+  // SetupPinScreenReqModel.fromJson(Map<String, dynamic> json) {
   //   email = json['email'];
   //   token = json['token'];
   // }

@@ -9,8 +9,8 @@ import 'package:smartpay/models/response_models/resend_verification_res_model.da
 import 'package:smartpay/models/user_detail_model.dart';
 import 'package:smartpay/screens/login_screen/logic/login_screen_repo.dart';
 import 'package:smartpay/screens/root_access_screens/root_access_screen.dart';
-import 'package:smartpay/screens/verification_screen/logic/verification_screen_repo.dart';
-import 'package:smartpay/screens/verification_screen/ui/verification_screen.dart';
+import 'package:smartpay/screens/setup_profile_screen/ui/setup_pin_screen.dart';
+import 'package:smartpay/screens/signup_screen/ui/verification_screen.dart';
 import 'package:smartpay/state_manager/central_bloc.dart';
 import 'package:smartpay/utils/common.dart';
 import 'package:smartpay/utils/constants.dart';
@@ -35,55 +35,56 @@ class LoginScreenBLoc extends Bloc<LoginScreenEvent, LoginScreenState> {
 
     var reqData = LoginReqModel(email: event.email, password: event.password);
 
-    LoginResModel? loginRes = await loginRepo.login(reqData, keepPreloaderLoading: true);
-
-    ErrorResModel? centralProvider = Common.navigatorKey.currentContext!.read<CentralBLoc>().errorResModel;
-
-    if( (centralProvider?.detail?.contains("User account not verified.") ?? false)){
-
-      ResendVerificationResModel? _ = await VerificationScreenRepository().resendVerificationCode(event.email);
-
-      Navigator.pushNamed(
-        
-        Common.navigatorKey.currentContext!, 
-        
-        VerificationScreen.routeName, arguments: event.email
-        
-      );
-
-    }
+    LoginResModel? loginRes = await loginRepo.login(reqData);
 
     if(loginRes is! LoginResModel) return;
 
-    await SmartpaySharedPreferences.putUserInfo(
+    var u = UserDetailModel(
 
-      UserDetailModel(
+      fullName: loginRes.data?.user?.fullName,
 
-        firstName: loginRes.firstName,
+      username: loginRes.data?.user?.username,
 
-        lastName: loginRes.lastName,
+      country: loginRes.data?.user?.country,
 
-        phoneNumber: loginRes.phoneNumber,
+      email: loginRes.data?.user?.email,
 
-        email: loginRes.email,
+      id: loginRes.data?.user?.id,
 
-        id: loginRes.id,
-
-        userToken: loginRes.accessToken,
-
-        userType: loginRes.userType,
-
-        patientId: loginRes.userTypeId,
-
-        refreshToken: loginRes.refreshToken,
-
-        agoraUserId: loginRes.agoraUserId
-
-      )
+      userToken: loginRes.data?.token
 
     );
 
-    Common.navigatorKey.currentContext!.read<CentralBLoc>().add(CentralBLocGetPatientDetailsEvent());
+    try {
+
+      bool centralProviderError = await Common.navigatorKey.currentContext!.read<CentralBLoc>().checkPin(
+        
+        passwordKey: reqData.password!, 
+        
+        userData: u
+        
+      );
+
+      if (!centralProviderError) {
+
+        Common.smartpayToast("Incorrect credentials", isError: true);
+
+        return;
+
+      }
+
+      Navigator.pushNamed(Common.navigatorKey.currentContext!, RootAccessScreen.routeName);
+
+    } on StoreUserInfoException {
+
+        Common.navigatorKey.currentContext!.read<CentralBLoc>().setupPinScreenShouldCheckPin = false;
+        Navigator.pushNamed(Common.navigatorKey.currentContext!, SetupPinScreen.routeName, arguments: u);
+
+        return;
+
+    }
+
+    // Common.navigatorKey.currentContext!.read<CentralBLoc>().checkPin(passwordKey: passwordKey, userData: userData);
 
     //Then move to Root Access Screen(Home Screen)
     // Check the ui BlocListener for this functionality

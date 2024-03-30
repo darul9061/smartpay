@@ -159,7 +159,7 @@ class SmartpayApp extends StatelessWidget {
 
         primaryColor: SmartpayColors.smartpayPrimaryColor,
 
-        scaffoldBackgroundColor: SmartpayColors.smartpayBlueishWhite,
+        scaffoldBackgroundColor: Colors.white,
 
         colorScheme: ColorScheme.fromSeed(seedColor: SmartpayColors.smartpaySecondaryColor),
 

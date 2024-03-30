@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartpay/models/user_detail_model.dart';
 import 'package:smartpay/screens/root_access_screens/root_access_screen.dart';
-import 'package:smartpay/screens/welcome_screen.dart';
+import 'package:smartpay/screens/setup_profile_screen/ui/setup_pin_screen.dart';
+import 'package:smartpay/screens/welcome_screen/welcome_screen.dart';
 import 'package:smartpay/state_manager/central_bloc.dart';
 import 'package:smartpay/utils/common.dart';
 import 'package:smartpay/utils/constants.dart';
+import 'package:smartpay/utils/media_query.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -29,23 +31,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
       UserDetailModel? userInfo = await SmartpaySharedPreferences.getUserInfo(showWarning: false);
 
-      if(userInfo is UserDetailModel){ 
-        
-        context.read<CentralBLoc>().add(CentralBLocGetPatientDetailsEvent(preloader: false)); 
-        
-      }
-
-      Future.delayed(const Duration(milliseconds: 4000), () {
+      Future.delayed(const Duration(milliseconds: 4000), () async {
 
         if(userInfo is! UserDetailModel){
 
           Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
 
-        }else { 
+        }else {
 
-          context.read<CentralBLoc>().add(CentralBLocGetPatientDetailsEvent());
+          context.read<CentralBLoc>().setupPinScreenShouldCheckPin = true;
           
-          Navigator.pushReplacementNamed(context, RootAccessScreen.routeName); 
+          Navigator.pushReplacementNamed(context, SetupPinScreen.routeName, arguments: userInfo); 
           
         }
 
@@ -59,9 +55,61 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return Scaffold(
 
-      body: Container(
+      body: SizedBox(
 
-        child: Center(child: Image.asset(SmartpayImagesAssets.smartpayLongLogo, width: Common.Ws(0.6)) ),
+        child: Center(
+          
+          child: Column(
+
+            mainAxisAlignment: MainAxisAlignment.center,
+            
+            children: [
+              
+              Image.asset(SmartpayImagesAssets.smartpayLogo, width: Common.Ws(0.2)) ,
+
+              const SizedBox(height: 10),
+
+              RichText(
+                
+                text: TextSpan(
+
+                  text: "Smart",
+
+                  style: context.textSize.displaySmall?.copyWith(
+
+                    color: SmartpayColors.smartpayPrimaryColor,
+
+                    fontWeight: FontWeight.bold
+
+                  ),
+
+                  children: [
+
+                    TextSpan(
+
+                      text: "pay.",
+
+                      style: context.textSize.displaySmall?.copyWith(
+
+                        color: SmartpayColors.smartpaySecondaryColor,
+
+                        fontWeight: FontWeight.bold
+
+                      ),
+
+                    )
+
+                  ]
+
+                )
+                
+              ),
+              
+            ]
+              
+          ),
+
+        )
 
       ),
 

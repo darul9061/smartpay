@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartpay/components/appbar.dart';
 import 'package:smartpay/components/buttons.dart';
-import 'package:smartpay/components/card.dart';
 import 'package:smartpay/components/textinput.dart';
-import 'package:smartpay/screens/forgot_password_screen/logic/forgot_password_screen_bloc.dart';
-import 'package:smartpay/screens/login_screen/ui/login_screen.dart';
+import 'package:smartpay/screens/forgot_password_screen/ui/forgot_password_verify_identity_screen.dart';
+import 'package:smartpay/utils/common.dart';
 import 'package:smartpay/utils/constants.dart';
+import 'package:smartpay/utils/hexcolor.dart';
 import 'package:smartpay/utils/media_query.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -22,18 +21,50 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
-  final TextEditingController _emailController  = TextEditingController();
-  
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  TextEditingController emailEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    
+
     return Scaffold(
 
-      appBar: SmartpayAppbars.plain( context, leadingWidget: Image.asset( SmartpayImagesAssets.smartpayLongLogo ), isTransparent: true ),
+      appBar: SmartpayAppbars.plain( context, isTransparent: true ),
+
+      bottomNavigationBar: Padding(
+
+        padding: MediaQuery.of(context).viewInsets,
+        
+        child:  Container(
+
+          padding: const EdgeInsets.symmetric( horizontal: 20, vertical: 20),
+
+          child: SmartpayButtons.plain(
+
+            () {
+
+              if( (formKey.currentState?.validate() ?? false) ){
+
+                formKey.currentState?.save();
+
+                FocusManager.instance.primaryFocus?.unfocus();
+
+                Navigator.pushNamed(context, ForgotPasswordVerifyIdentityScreen.routeName);
+
+              }
+
+            },
+            
+            title: "Send me email"
+
+          )
+
+        )
+
+      ),
 
       body: SafeArea(
-
-        top: false,
 
         child: SingleChildScrollView(
 
@@ -41,23 +72,47 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
             padding: const EdgeInsets.symmetric( horizontal: 20 ),
 
+            // height: context.screenHeight,
+
+            width: context.screenWidth,
+
             child: Column(
 
               crossAxisAlignment: CrossAxisAlignment.stretch,
 
+              mainAxisAlignment: MainAxisAlignment.start,
+
               children: [
+
+                Row(
+                  
+                  children: [
+
+                    Image.asset(
+
+                      SmartpayImagesAssets.lockIllustration,
+
+                      width: Common.Ws(0.3),
+
+                    )
+
+                  ]
+                  
+                ),
 
                 Padding(
                   
-                  padding: const EdgeInsets.only( top: 26, bottom: 12 ),
+                  padding: const EdgeInsets.only( top: 16, bottom: 13),
                   
                   child: Text(
 
-                    SmartpayTextStrings.forgotPassword,
+                    "Password Recovery",
 
                     style: context.textSize.titleLarge?.copyWith(
 
                       fontWeight: FontWeight.bold,
+
+                      fontSize: (context.textSize.titleLarge?.fontSize ?? 0.0) * 1.1,
 
                       color: SmartpayColors.smartpayBlack
 
@@ -69,151 +124,70 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                 Padding(
                   
-                  padding: const EdgeInsets.only( bottom: 25 ),
+                  padding: const EdgeInsets.only( bottom: 10 ),
                   
                   child: Text(
 
-                    SmartpayTextStrings.enterEmailAssocAcct,
+                    "Enter your registered email below to receive password instructions",
 
-                    style: TextStyle(
+                    textAlign: TextAlign.left,
 
-                      fontSize: 15,
+                    style: context.textSize.titleMedium?.copyWith(
 
-                      color: SmartpayColors.smartpayGray
+                      color: HexColor("#6B7280"),
+
+                      fontSize: (context.textSize.titleMedium?.fontSize ?? 0.0) + 1.5,
+
+                      fontWeight: FontWeight.w200
 
                     ),
 
                   )
-
+                  
                 ),
 
-                SmartpayCard.simpleCard(
+                Form(
 
-                  context,
+                  key: formKey,
 
-                  horizontalPadding: 15,
+                  child: Column(
 
-                  verticalPadding: 0,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
 
-                  child: Column( 
-
-                    crossAxisAlignment: CrossAxisAlignment.start,
-
-                    mainAxisAlignment: MainAxisAlignment.start,
-                  
                     children: [
 
                       TextInput(
-                                
-                        controller: _emailController, 
                         
-                        textEntry: "", 
+                        controller: emailEditingController, 
                         
-                        labelText: SmartpayTextStrings.emailInputLabel
+                        textEntry: SmartpayTextStrings.emailInputLabel
                         
                       ),
 
                       const SizedBox(
 
-                        height: 25,
+                        height: 20,
 
-                      ),
+                      )
 
-                      SmartpayButtons.plain(
-                        () {
-
-                          if(_emailController.text.isNotEmpty){
-
-                            context.read<ForgotPasswordScreenBLoc>().add(ForgotPasswordScreenOnTapSendOTPEvents(email: _emailController.text));
-
-                          }
-
-                        },
-
-                        title: SmartpayTextStrings.recover
-                        
-                      ),
-
-
-                      const SizedBox(
-
-                        height: 15,
-
-                      ),
-                      
-                    ]
-                      
-                  ),
-
-                ),
-
-
-                Padding(
-                  
-                  padding: const EdgeInsets.only( top: 12 ),
-
-                  child: Center(
-                    
-                    child: Row(
-
-                      mainAxisAlignment: MainAxisAlignment.center,
-
-                      children: [
-
-                        Text(
-
-                          SmartpayTextStrings.rememberNow,
-
-                          style: TextStyle(
-
-                            color: SmartpayColors.smartpayGray
-                            
-                          ),
-
-                        ),
-
-                        TextButton(
-                          
-                          onPressed: (){
-
-                            Navigator.pushNamed(context, LoginScreen.routeName);
-
-                          }, 
-                          
-                          child: Text(
-
-                            SmartpayTextStrings.login,
-
-                            style: context.textSize.bodyMedium?.copyWith(
-
-                              fontWeight: FontWeight.w500
-                              
-                            ),
-
-                          )
-
-                        )
-
-                      ]
-
-                    )
+                    ],
 
                   )
+                  
+                ),
 
-                )
-                
-              ]
-              
+              ],
+
             )
-            
-          )
-          
+
+          ),
+
         )
-        
+      
       ),
 
     );
-    
+
   }
   
 }

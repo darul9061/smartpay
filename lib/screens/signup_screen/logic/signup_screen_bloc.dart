@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smartpay/models/request_models/signup_req_model.dart';
-import 'package:smartpay/models/response_models/resend_verification_res_model.dart';
+import 'package:smartpay/models/request_models/email_verif_req_model.dart';
+import 'package:smartpay/models/request_models/setup_profile_req_model.dart';
+import 'package:smartpay/models/response_models/email_verification_res_model.dart';
+import 'package:smartpay/models/response_models/get_email_verif_token_res_model.dart';
 import 'package:smartpay/models/response_models/signup_res_model.dart';
+import 'package:smartpay/screens/setup_profile_screen/ui/setup_profile_screen.dart';
 import 'package:smartpay/screens/signup_screen/logic/signup_screen_repo.dart';
-import 'package:smartpay/screens/verification_screen/logic/verification_screen_bloc.dart';
-import 'package:smartpay/screens/verification_screen/logic/verification_screen_repo.dart';
-import 'package:smartpay/screens/verification_screen/ui/verification_screen.dart';
+import 'package:smartpay/screens/signup_screen/ui/verification_screen.dart';
 import 'package:smartpay/utils/common.dart';
-import 'package:smartpay/utils/constants.dart';
 
 part 'signup_screen_state.dart';
 part 'signup_screen_events.dart';
@@ -19,31 +19,41 @@ class SignUpScreenBLoc extends Bloc<SignUpScreenEvent, SignUpScreenState>{
 
   SignUpScreenBLoc():super(SignUpScreenState()){
 
-    on<SignUpScreenTapEvent>(authUser);
+    on<SignUpGetEmailVerifTokenEvent>(getEmailVerifyToken);
+
+    on<SignUpEmailVerificationEvent>(verifyEmail);
 
   }
 
-  Future<void> authUser(SignUpScreenTapEvent event, Emitter<SignUpScreenState> emit) async {
+  Future<void> verifyEmail(SignUpEmailVerificationEvent event, Emitter<SignUpScreenState> emit) async {
 
-    var reqData = SignUpReqModel(
-      
-      firstName: event.firstname, 
-      lastName: event.lastname, 
-      email: event.email, 
-      password: event.password, 
-      rePassword: event.password, 
-      phoneNumber: event.phoneNumber, 
-      userType: 1
-      
+    EmailVerificationResModel? signupRes = await signupRepo.verifyEmail(
+
+      EmailVerificationReqModel( email: event.email, token: event.token )
+
     );
 
-    SignUpResModel? signupRes = await signupRepo.authUser(reqData);
+    if(signupRes is! EmailVerificationResModel) return;
 
-    if(signupRes is! SignUpResModel) return;
+    Navigator.pushReplacementNamed( Common.navigatorKey.currentContext!, SetupProfileScreen.routeName, arguments: signupRes.data!.email! );
 
-    // ResendVerificationResModel? _ = await VerificationScreenRepository().resendVerificationCode(event.email);
+  }
 
-    Navigator.pushReplacementNamed(Common.navigatorKey.currentContext!, VerificationScreen.routeName, arguments: signupRes.email!);
+  Future<void> getEmailVerifyToken(SignUpGetEmailVerifTokenEvent event, Emitter<SignUpScreenState> emit) async {
+
+    GetEmailVerifTokenResModel? signupRes = await signupRepo.getEmailVerifToken(event.email);
+
+    if(signupRes is! GetEmailVerifTokenResModel) return;
+
+    Navigator.pushReplacementNamed(Common.navigatorKey.currentContext!, VerificationScreen.routeName, arguments: event.email);
+
+  }
+
+  void resendVerification(SignUpResendVerificationEvent event, Emitter<SignUpScreenState> emit) async {
+
+    GetEmailVerifTokenResModel? _ = await signupRepo.getEmailVerifToken(event.email);
+    
+    emit(SignUpScreenState());
 
   }
 

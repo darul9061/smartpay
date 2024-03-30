@@ -82,7 +82,7 @@ abstract class HttpVerbs {
 
         Common.navigatorKey.currentContext!.read<CentralBLoc>().errorResModel = httpResModel;
 
-        await Common.smartpayToast(httpResModel.detail!);
+        await Common.smartpayToast(httpResModel.message!);
         
       } catch (err) { 
         
@@ -153,11 +153,24 @@ abstract class HttpVerbs {
 
             Common.navigatorKey.currentContext!.read<CentralBLoc>().errorResModel = httpResModel;
 
-            await Common.smartpayToast(httpResModel.detail!, isError: true);
+            var v = httpResModel.errors?.values ?? [];
+
+            if (v.isEmpty){
+
+              await Common.smartpayToast(httpResModel.message!, isError: true);
+
+
+            } else if( v.toList().isNotEmpty ){
+
+              var t = v.toList()[0][0];
+
+              await Common.smartpayToast(t as String, isError: true);
+
+            }
             
-          } catch (err) { 
+          } catch (err, stacktrace) { 
             
-            print("Error from dioError: $err"); 
+            print("Error from dioError: $err $stacktrace"); 
           
             try {
 

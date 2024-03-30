@@ -1,4 +1,8 @@
-import 'package:smartpay/models/request_models/signup_req_model.dart';
+import 'package:flutter/material.dart';
+import 'package:smartpay/models/request_models/email_verif_req_model.dart';
+import 'package:smartpay/models/request_models/setup_profile_req_model.dart';
+import 'package:smartpay/models/response_models/email_verification_res_model.dart';
+import 'package:smartpay/models/response_models/get_email_verif_token_res_model.dart';
 import 'package:smartpay/models/response_models/signup_res_model.dart';
 import 'package:smartpay/utils/http/http_constants.dart';
 import 'package:smartpay/utils/http/http_methods.dart';
@@ -9,19 +13,40 @@ class SignUpScreenRepository {
 
   SignUpScreenRepository();
 
-  Future<SignUpResModel?> authUser(SignUpReqModel signupReq) async {
+  Future<GetEmailVerifTokenResModel?> getEmailVerifToken(String email) async {
 
     try {
 
-      print("httpGet ----------------->");
+      debugPrint("httpGet ----------------->");
 
-      var res = await _httpMethods.httpPost(HttpConstants.signup, data: signupReq.toJson());
+      var res = await _httpMethods.httpPost(HttpConstants.getVerifyEmailToken, data: { "email": email });
 
-      return SignUpResModel.fromJson(res);
+      return GetEmailVerifTokenResModel.fromJson(res);
 
     } catch (e) {
 
-      print("http repo error: LoginResModel" + e.toString());
+      debugPrint("http repo error: GetEmailVerifTokenResModel$e");
+
+    }
+
+    return null;
+
+
+  }
+
+  Future<EmailVerificationResModel?> verifyEmail(EmailVerificationReqModel reqData) async {
+
+    try {
+
+      debugPrint("httpGet ----------------->");
+
+      var res = await _httpMethods.httpPost(HttpConstants.verifyEmail, data: reqData.toJson());
+
+      return EmailVerificationResModel.fromJson(res);
+
+    } catch (e) {
+
+      debugPrint("http repo error: EmailVerificationResModel$e");
 
     }
 

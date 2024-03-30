@@ -23,6 +23,10 @@ class TextInput extends StatefulWidget {
 
   final String? Function(String?)? validator;
 
+  final void Function(String text)? onChanged;
+
+  final Widget? prefix;
+
   TextInput(
       {Key? key,
       required this.controller,
@@ -33,7 +37,9 @@ class TextInput extends StatefulWidget {
       this.obscureText = false,
       this.fromLogin = false,
       this.enabled = true,
-      this.validator})
+      this.validator,
+      this.onChanged,
+      this.prefix})
       : super(key: key);
 
   @override
@@ -68,7 +74,7 @@ class _TextInputWithIconState extends State<TextInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(top: 25),
+        padding: EdgeInsets.only(top: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -84,73 +90,85 @@ class _TextInputWithIconState extends State<TextInput> {
           SizedBox(
               height: inputHeight,
               child: TextFormField(
-                validator: widget.validator ?? (value) {
-                  final passwordRegex = RegExp(
-                      r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\d\s:])(.{8,})$');
+                validator: widget.validator ??
+                    (value) {
+                      final passwordRegex = RegExp(
+                          r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\d\s:])(.{8,})$');
 
-                  final emailRegex =
-                      RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                      final emailRegex =
+                          RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
-                  if ((value?.isNotEmpty ?? false) &&
-                      obscureText &&
-                      !widget.fromLogin) {
-                    if (!passwordRegex.hasMatch(value!)) {
-                      return "Password must contain at least 8 Characters, \na Capital letter, a symbol or a number";
-                    }
-                  } else if ((labelText?.toLowerCase().contains("email") ??
-                          false) &&
-                      (value?.isNotEmpty ?? false)) {
-                    if (!emailRegex.hasMatch(value!)) {
-                      return "Value must be a valid email";
-                    }
-                  } else if ((value?.isEmpty ?? false)) {
-                    // if field is empty and not organisation url input
+                      if ((value?.isNotEmpty ?? false) &&
+                          obscureText &&
+                          !widget.fromLogin) {
+                        if (!passwordRegex.hasMatch(value!)) {
+                          return "Password must contain at least 8 Characters, \na Capital letter, a symbol or a number";
+                        }
+                      } else if ((labelText?.toLowerCase().contains("email") ??
+                                  false) &&
+                              (value?.isNotEmpty ?? false) ||
+                          (textEntry.toLowerCase().contains("email")) &&
+                              (value?.isNotEmpty ?? false)) {
+                        if (!emailRegex.hasMatch(value!)) {
+                          return "Value must be a valid email";
+                        }
+                      } else if ((value?.isEmpty ?? false)) {
+                        // if field is empty and not organisation url input
 
-                    return "Field must not be empty";
-                  }
+                        return "Field must not be empty";
+                      }
 
-                  return null;
-                },
+                      return null;
+                    },
                 controller: controller,
                 obscureText: visible,
+                onChanged: widget.onChanged,
                 cursorColor: SmartpayColors.smartpayPrimaryColor,
                 enabled: widget.enabled,
                 keyboardType: widget.keyboardType,
+                style: context.textSize.bodyLarge?.copyWith(
+                    color: SmartpayColors.smartpayPrimaryColor,
+                    fontWeight: FontWeight.w700),
                 decoration: InputDecoration(
+                  prefix: widget.prefix,
                   filled: true,
 
-                  fillColor: Colors.white,
+                  fillColor: SmartpayColors.smartpayLighterAsh,
 
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 17, vertical: 15),
 
                   errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(width: 0),
-                      borderRadius: BorderRadius.circular(7)),
+                      borderSide:
+                          const BorderSide(color: Colors.red, width: 0.8),
+                      borderRadius: BorderRadius.circular(15)),
 
                   focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red, width: 1),
-                      borderRadius: BorderRadius.circular(7)),
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(15)),
 
                   focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: HexColor("#2E2F38")),
-                      borderRadius: BorderRadius.circular(7)),
+                      borderSide:
+                          BorderSide(color: SmartpayColors.smartpayGreen),
+                      borderRadius: BorderRadius.circular(15)),
 
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: SmartpayColors.smartpayBorderColor, width: 1),
-                      borderRadius: BorderRadius.circular(9)),
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(15)),
+
                   disabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: SmartpayColors.smartpayBorderColor, width: 1),
-                      borderRadius: BorderRadius.circular(9)),
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(15)),
 
                   hintText: textEntry,
 
                   hintStyle: context.textSize.titleMedium?.copyWith(
-                      color: HexColor("#B9B9B9"), fontWeight: FontWeight.w400),
+                      fontSize:
+                          (context.textSize.titleMedium?.fontSize ?? 0.0) + 2,
+                      color: SmartpayColors.smartpayGray,
+                      fontWeight: FontWeight.w400),
 
-                  errorStyle: TextStyle(
+                  errorStyle: const TextStyle(
                       backgroundColor: Colors.white,
                       height: 0.9,
                       overflow: TextOverflow.visible),

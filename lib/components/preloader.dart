@@ -58,13 +58,13 @@ class _SmartpayLoaderAnimationBuilderState extends State<SmartpayLoaderAnimation
 
         radius: Common.Ws(0.08),
 
-        backgroundColor: SmartpayColors.smartpaySecondaryColor,
+        backgroundColor: SmartpayColors.smartpayGreen,
 
         child: Padding(
 
           padding: const EdgeInsets.all(12),
 
-          child: Image.asset(SmartpayIconsAssets.loadingStethoscope, color: SmartpayColors.smartpayPrimaryColor,)
+          child: Image.asset(SmartpayImagesAssets.smartpayLogo,)
 
         ),
 

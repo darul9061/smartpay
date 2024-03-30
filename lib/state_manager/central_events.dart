@@ -2,14 +2,24 @@ part of 'central_bloc.dart';
 
 abstract class CentralBLocEvent {}
 
-class CentralBLocGetPatientDetailsEvent extends CentralBLocEvent {
+class CentralBLocPinCheckEvent extends CentralBLocEvent {
 
   final bool preloader;
 
   final bool keepPreloaderLoading;
 
-  CentralBLocGetPatientDetailsEvent({this.preloader = true, this.keepPreloaderLoading = false});
+  final String passwordKey;
 
+  final UserDetailModel userData;
+
+  CentralBLocPinCheckEvent({
+    
+    required this.passwordKey,
+    required this.userData,
+    this.preloader = true, 
+    this.keepPreloaderLoading = false
+    
+  });
 }
 
 class CentralBLocLogoutPatientDetailsEvent extends CentralBLocEvent {}

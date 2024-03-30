@@ -1,21 +1,16 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:smartpay/components/buttons.dart';
-import 'package:smartpay/models/request_models/next_of_kin_req_model.dart';
-import 'package:smartpay/models/request_models/store_patient_detail_req_model.dart';
-import 'package:smartpay/models/response_models/next_of_kin_res_model.dart';
-import 'package:smartpay/models/response_models/patient_details_res_models.dart';
-import 'package:smartpay/models/response_models/store_patient_detail_res_model.dart';
+import 'package:smartpay/models/request_models/setup_profile_req_model.dart';
+import 'package:smartpay/models/response_models/setup_profile_res_model.dart';
 import 'package:smartpay/models/user_detail_model.dart';
-import 'package:smartpay/screens/common_screens/success_payment_screen.dart';
 import 'package:smartpay/screens/root_access_screens/root_access_screen.dart';
 import 'package:smartpay/screens/setup_profile_screen/logic/setup_profile_screen_repo.dart';
+import 'package:smartpay/screens/setup_profile_screen/ui/setup_pin_screen.dart';
+import 'package:smartpay/screens/setup_profile_screen/ui/setup_profile_screen.dart';
+import 'package:smartpay/state_manager/central_bloc.dart';
 import 'package:smartpay/utils/common.dart';
-import 'package:smartpay/utils/constants.dart';
-import 'package:smartpay/utils/media_query.dart';
 
 part 'setup_profile_screen_events.dart';
 part 'setup_profile_screen_state.dart';
@@ -28,134 +23,80 @@ class SetupProfileScreenBLoc extends Bloc<SetupProfileScreenEvent, SetupProfileS
 
   final ImagePicker _imagePicker = ImagePicker();
 
-  SetupProfileScreenBLoc():super(SetupProfileScreenState()){
+  SetupProfileScreenBLoc():super( SetupProfileScreenState() ){
 
-    on<SetupProfileScreenOnTapEvents>(storePatientDetail);
+    on<SetupProfileScreenOnTapEvents>( setupProfile );
 
-    on<SetupProfileScreenSelectProfileImage>(pickProfileImage);
+    on<SetupProfileScreenSavePinEvent>( savePin );
+
+    on<SetupProfileScreenCheckPinEvent>( checkPin );
 
   }
 
+  setupProfile( SetupProfileScreenOnTapEvents event, Emitter<SetupProfileScreenState> emit ) async {
 
-  void storePatientDetail(SetupProfileScreenOnTapEvents event, Emitter<SetupProfileScreenState>  emit) async {
+    SetupProfileResModel? signupRes = await _setupProfileRepo.storeProfile(
 
-    var reqData = StorePatientDetailReqModel(
-      
-      phoneNumber: event.phoneNumber,
-      email: event.email,
-      firstName: event.firstName,
-      lastName: event.lastName,
-      dateOfBirth: event.dateOfBirth,
-      gender: event.gender,
-      bloodGroup: event.bloodGroup,
-      genotype: event.genotype,
-      height: event.height,
-      weight: event.weight,
-      address: event.address,
-      profilePicture: _setupProfileScreenState.uiProfileImageByte == null ? 
-        null 
-        : 
-        MultipartFile.fromFileSync( _setupProfileScreenState.uiProfileImageXFile!.path ),
-      
-    );
-
-    UserDetailModel userDetailModel = ( await SmartpaySharedPreferences.getUserInfo() )!;
-
-    PatientDetailsResModel? setupRes = await _setupProfileRepo.storeProfile(reqData, userDetailModel.patientId!, keepPreloaderLoading: true);
-
-    if(setupRes is! PatientDetailsResModel) return;
-
-    NextOfKinResModel? nextOfKinResModel = await _setupProfileRepo.storeNextOfKinProfile(event.nextOfKinReqModel, userDetailModel.patientId!);
-
-    if(nextOfKinResModel is! NextOfKinResModel) return;
-
-    Navigator.pushReplacement(
-      
-      Common.navigatorKey.currentContext!, 
-
-      MaterialPageRoute(
+      SetupProfileReqModel( 
         
-        builder: (context) => SuccessPaymentScreen(
-
-          header: "Account Successfully Created",
-
-          background: Container(),
-
-          child: Column(
-                        
-            children: [
-
-              Text(
-                
-                SmartpayTextStrings.successAccountCreationMessage,
-
-                textAlign: TextAlign.center,
-                
-                style: context.textSize.bodyMedium?.copyWith(
-
-                  color: SmartpayColors.smartpayGray,
-
-                ),
-
-              ),
-
-              const SizedBox(
-
-                height: 15,
-
-              ),
-
-              SmartpayButtons.plain(
-
-                () { 
-
-                  Navigator.pushReplacementNamed(
-                    
-                    context, 
-                    
-                    RootAccessScreen.routeName
-                    
-                  );
-                  
-                },
-
-                title: SmartpayTextStrings.continueWord
-                
-              ),
-
-              const SizedBox(
-
-                height: 20,
-
-              ),
-              
-            ]
-            
-          ),
-
-        )
-
+        email: event.email,
+        fullName: event.fullName,
+        username: event.username,
+        country: event.country,
+        password: event.password,
+        deviceName: event.deviceName,
+        
       )
-      
+
     );
+
+    if( signupRes is! SetupProfileResModel ) return;
+
+    var u = UserDetailModel(
+
+      id: signupRes.data?.user?.id,
+      email: signupRes.data?.user?.email,
+      fullName: signupRes.data?.user?.fullName,
+      username: signupRes.data?.user?.username,
+      country: signupRes.data?.user?.country,
+      userToken: signupRes.data?.token,
+
+    );
+
+
+
+
+    Common.navigatorKey.currentContext!.read<CentralBLoc>().setupPinScreenShouldCheckPin = false;
+    Navigator.pushReplacementNamed(Common.navigatorKey.currentContext!, SetupPinScreen.routeName, arguments: u);
 
   }
 
-  void pickProfileImage(SetupProfileScreenSelectProfileImage event, Emitter<SetupProfileScreenState> emit) async {
+  savePin( SetupProfileScreenSavePinEvent event, Emitter<SetupProfileScreenState> emit ) async {
 
-    XFile? profileImage = await _imagePicker.pickImage( source: ImageSource.gallery );
+    debugPrint("SetupProfileScreenSavePinEvent ===>  ${event.pin} ${event.userDetail?.toJson()}");
 
-    if(profileImage != null) {
+    await Common.navigatorKey.currentContext!.read<CentralBLoc>().storePin(passwordKey: event.pin, userData: event.userDetail);
 
-      emit(
-        
-        _setupProfileScreenState
-        ..uiProfileImageByte = ( await profileImage.readAsBytes() )
-        ..uiProfileImageXFile = ( profileImage )
-        
-      );
+    Navigator.pushReplacementNamed(Common.navigatorKey.currentContext!, RootAccessScreen.routeName);
+
+  }
+
+
+  checkPin( SetupProfileScreenCheckPinEvent event, Emitter<SetupProfileScreenState> emit ) async {
+
+    debugPrint("SetupProfileScreenSavePinEvent ===>  ${event.pin} ${event.userDetail?.toJson()}");
+
+    var v = await Common.navigatorKey.currentContext!.read<CentralBLoc>().checkPin(passwordKey: event.pin, userData: event.userDetail);
+
+    if (!v){
+
+      Common.smartpayToast("Pin is wrong");
+
+      return;
 
     }
+
+    Navigator.pushReplacementNamed(Common.navigatorKey.currentContext!, RootAccessScreen.routeName);
 
   }
 

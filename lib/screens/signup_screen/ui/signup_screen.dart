@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartpay/components/appbar.dart';
 import 'package:smartpay/components/buttons.dart';
-import 'package:smartpay/components/card.dart';
-import 'package:smartpay/components/phone_num_input.dart';
 import 'package:smartpay/components/textinput.dart';
-import 'package:smartpay/screens/common_screens/in_app_webview.dart';
 import 'package:smartpay/screens/login_screen/ui/login_screen.dart';
 import 'package:smartpay/screens/signup_screen/logic/signup_screen_bloc.dart';
-import 'package:smartpay/screens/verification_screen/ui/verification_screen.dart';
+import 'package:smartpay/screens/signup_screen/ui/verification_screen.dart';
 import 'package:smartpay/utils/common.dart';
 import 'package:smartpay/utils/constants.dart';
-import 'package:smartpay/utils/http/http_constants.dart';
+import 'package:smartpay/utils/hexcolor.dart';
 import 'package:smartpay/utils/media_query.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -31,22 +28,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   TextEditingController emailEditingController = TextEditingController();
 
-  TextEditingController passwordEditingController = TextEditingController();
-
-  TextEditingController firstNameEditingController = TextEditingController();
-
-  TextEditingController lastNameEditingController = TextEditingController();
-
-  TextEditingController phoneEditingController = TextEditingController();
-
-  bool tcChecked = false;
+  bool emailTextLengthReady = false;
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
 
-      appBar: SmartpayAppbars.plain( context, leadingWidget: Image.asset( SmartpayImagesAssets.smartpayLongLogo ), isTransparent: true ),
+      appBar: SmartpayAppbars.plain( context, isTransparent: true ),
 
       body: SafeArea(
 
@@ -64,356 +53,301 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               crossAxisAlignment: CrossAxisAlignment.stretch,
 
+              mainAxisAlignment: MainAxisAlignment.start,
+
               children: [
 
                 Padding(
                   
-                  padding: const EdgeInsets.only( top: 26, bottom: 22 ),
+                  padding: const EdgeInsets.only( top: 26,),
                   
-                  child: Text(
+                  child: RichText(
 
-                    SmartpayTextStrings.signUpTitle,
+                    text: TextSpan(
 
-                    style: context.textSize.titleLarge?.copyWith(
+                      text: "Create a ",
 
-                      fontWeight: FontWeight.bold,
+                      style: context.textSize.titleLarge?.copyWith(
 
-                      color: SmartpayColors.smartpayBlack
+                        fontWeight: FontWeight.bold,
 
-                    ),
+                        fontSize: (context.textSize.titleLarge?.fontSize ?? 0.0) * 1.1,
 
-                  )
-                ),
+                        color: SmartpayColors.smartpayBlack
 
-                SmartpayCard.simpleCard(
-
-                  context,
-
-                  topMargin: 0,
-
-                  bottomMargin: 0,
-                  
-                  child: Form(
-
-                    key: formKey,
-
-                    child: Column(
-
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      ),
 
                       children: [
 
-                        TextInput(
-                          
-                          controller: firstNameEditingController, 
-                          
-                          textEntry: SmartpayTextStrings.empty, 
-                          
-                          labelText: SmartpayTextStrings.firstname
-                          
-                        ),
+                        TextSpan(
 
-                        TextInput(
-                          
-                          controller: lastNameEditingController, 
-                          
-                          textEntry: SmartpayTextStrings.empty, 
-                          
-                          labelText: SmartpayTextStrings.lastname
-                          
-                        ),
+                          text: "Smartpay",
 
-                        TextInput(
-                          
-                          controller: emailEditingController, 
-                          
-                          textEntry: SmartpayTextStrings.empty, 
-                          
-                          labelText: SmartpayTextStrings.emailInputLabel
-                          
-                        ),
+                          style: context.textSize.titleLarge?.copyWith(
 
-                        TextInput(
-                          
-                          controller: passwordEditingController, 
-                          
-                          textEntry: SmartpayTextStrings.empty, 
-                          
-                          labelText: SmartpayTextStrings.passwordInputLabel,
+                            fontWeight: FontWeight.bold,
 
-                          obscureText: true,
-                          
-                        ),
+                            fontSize: (context.textSize.titleLarge?.fontSize ?? 0.0) * 1.1,
 
-                        PhoneNumInput(
-                          
-                          controller: phoneEditingController, 
-                          
-                          textEntry: SmartpayTextStrings.empty, 
-                          
-                          labelText: SmartpayTextStrings.phoneNumInputLabel
-                          
-                        ),
-
-
-
-                        Padding(
-                          
-                          padding: const EdgeInsets.only( top: 18, bottom: 20),
-
-                          child: Row(
-
-                            mainAxisAlignment: MainAxisAlignment.start,
-
-                            children: [
-
-                              Transform.translate(
-
-                                offset: const Offset(-8, 0),
-
-                                child: Checkbox(
-
-                                  tristate: true,
-
-                                  overlayColor: MaterialStateProperty.all(Colors.white),
-
-                                  checkColor: Colors.white,
-
-                                  activeColor: SmartpayColors.smartpaySecondaryColor,
-
-                                  value: tcChecked,
-
-                                  onChanged: (bool? boolValue) {
-
-                                    setState(() {
-
-                                      tcChecked = boolValue ?? false;
-
-                                    });
-
-                                  },
-
-                                  visualDensity: VisualDensity.compact,
-
-                                  shape: RoundedRectangleBorder(
-
-                                    borderRadius: BorderRadius.circular(100),
-
-                                  ),
-
-                                  side: BorderSide(
-
-                                    width: 0.8,
-
-                                    color: SmartpayColors.smartpayBlueDarker
-                                      
-                                  )
-                                    , //HexColor("#D0D5DD")
-                                )
-                                
-                              ),
-
-                              Container(
-
-                                child: Expanded(
-
-                                  child: RichText(
-                                    
-                                    text: TextSpan(
-
-                                      children: [
-
-                                        TextSpan(
-
-                                          text: "By signing up, you agree to our ",
-
-                                          style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                                color: SmartpayColors.smartpayGray)
-
-                                        ),
-
-                                        WidgetSpan(
-                                          
-                                          child: InkWell(
-
-                                            onTap: () => Navigator.pushNamed(
-                                              
-                                              context, 
-
-
-                                              SmartpayInAppWebView.routeName,
-
-                                              arguments: Uri.parse(HttpConstants.protocol + HttpConstants.baseUrl + HttpConstants.terms)
-                                              
-                                            ),
-
-                                            child: Text(
-
-                                              "Terms of Service",
-
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall
-                                                  ?.copyWith(
-                                                      color: SmartpayColors.smartpayGray,
-                                                      decoration: TextDecoration.underline,
-                                                      decorationColor: SmartpayColors.smartpayGray
-                                                    ),
-
-                                            ),
-                                            
-                                          )
-                                          
-                                        ),
-
-
-                                        TextSpan(
-
-                                          text: " and ",
-
-                                          style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                                color: SmartpayColors.smartpayGray)
-
-                                        ),
-
-
-                                        WidgetSpan(
-                                          
-                                          child: InkWell(
-
-                                            onTap: () => Navigator.pushNamed(
-                                              
-                                              context, 
-
-
-                                              SmartpayInAppWebView.routeName,
-
-                                              arguments: Uri.parse(HttpConstants.protocol + HttpConstants.baseUrl + HttpConstants.policy)
-                                              
-                                            ),
-
-                                            child: Text(
-
-                                              "Privacy Policy.",
-
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall
-                                                  ?.copyWith(
-                                                      color: SmartpayColors.smartpayGray,
-                                                      decoration: TextDecoration.underline,
-                                                      decorationColor: SmartpayColors.smartpayGray
-                                                    ),
-
-                                            ),
-                                            
-                                          )
-                                          
-                                        )
-
-                                      ]
-
-                                    ),
-                                    
-                                  )
-
-                                  // child: InkWell(
-
-                                  //   onTap: () => Navigator.pushNamed(
-                                      
-                                  //     context, 
-
-
-                                  //     SmartpayInAppWebView.routeName,
-
-                                  //     arguments: Uri.parse(HttpConstants.protocol + HttpConstants.baseUrl + HttpConstants.terms)
-                                      
-                                  //   ),
-
-                                  //   child: Text(
-
-                                  //     "By signing up, you agree to our Terms of Service and Privacy Policy.",
-
-                                  //     style: Theme.of(context)
-                                  //         .textTheme
-                                  //         .bodySmall
-                                  //         ?.copyWith(
-                                  //             color: SmartpayColors.smartpayGray),
-
-                                  //   ),
-                                    
-                                  // )
-                                    
-                                )
-                                
-                              ),
-
-                            ],
+                            color: SmartpayColors.smartpaySecondaryColor
 
                           ),
 
                         ),
 
-                        SmartpayButtons.plain(
+                      ]
 
-                          () {
+                    ),
 
-                            if( (formKey.currentState?.validate() ?? false) && phoneEditingController.text.isNotEmpty){
-
-                              formKey.currentState?.save();
-
-                              FocusManager.instance.primaryFocus?.unfocus();
-
-                              if(!tcChecked){ Common.smartpayToast("Accept Terms of Service"); return ;}
-
-                              context.read<SignUpScreenBLoc>().add(
-
-                                SignUpScreenTapEvent(
-                                
-                                  firstname: firstNameEditingController.text, 
-                                  
-                                  lastname: lastNameEditingController.text, 
-                                  
-                                  email: emailEditingController.text, 
-                                  
-                                  password: passwordEditingController.text,
-
-                                  phoneNumber: phoneEditingController.text
-                                  
-                                )
-
-                              );
-
-                            }
-
-                          },
-                          
-                          title: SmartpayTextStrings.signUp
-
-                        ),
-
-                        const SizedBox(
-
-                          height: 20,
-
-                        )
-
-                      ],
-
-                    )
-                    
                   )
 
                 ),
 
+
+
+
+
                 Padding(
                   
+                  padding: const EdgeInsets.only( bottom: 13),
+                  
+                  child: 
+
+                  Text(
+
+                    " account",
+
+                    style: context.textSize.titleLarge?.copyWith(
+
+                      fontWeight: FontWeight.bold,
+
+                      fontSize: (context.textSize.titleLarge?.fontSize ?? 0.0) * 1.1,
+
+                      color: SmartpayColors.smartpayBlack
+
+                    ),
+
+                  ),
+
+                ),
+
+
+                Form(
+
+                  key: formKey,
+
+                  child: Column(
+
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+
+                    children: [
+
+                      TextInput(
+                        
+                        controller: emailEditingController,
+                        
+                        textEntry: SmartpayTextStrings.emailInputLabel,
+
+                        onChanged: (text){
+
+                          if(text.length > 4) { emailTextLengthReady = true; setState(() {}); return; }
+
+                          emailTextLengthReady = false;
+
+                          setState(() {});
+
+                        }
+                        
+                      ),
+
+                      const SizedBox(height: 15,),
+
+                      SmartpayButtons.plain(
+
+                        () {
+
+                          if( !emailTextLengthReady ) {
+
+                            return;
+
+                          }
+
+                          if( (formKey.currentState?.validate() ?? false) ){
+
+                            formKey.currentState?.save();
+
+                            FocusManager.instance.primaryFocus?.unfocus();
+
+                            context.read<SignUpScreenBLoc>().add(
+
+                              SignUpGetEmailVerifTokenEvent(email: emailEditingController.text)
+                              
+                            );
+
+                          }
+
+                        },
+                        
+                        title: SmartpayTextStrings.signUp,
+
+                        fillColor: !(emailTextLengthReady) ? SmartpayColors.smartpayGray : null
+
+                      ),
+
+                      const SizedBox(
+
+                        height: 20,
+
+                      )
+
+                    ],
+
+                  )
+                  
+                ),
+
+
+                Padding(
+
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+
+                  child: Stack(
+
+                    children: [
+
+                      Center(
+
+                        child: Divider( thickness: 2, color: HexColor("#F2F4F7") )
+                        
+                      ),
+
+                      Center(
+
+                        child: Container(
+
+                          padding: const EdgeInsets.symmetric(horizontal: 9),
+
+                          color: Colors.white,
+
+                          child: Text(
+
+                            "OR",
+
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+
+                                  color: HexColor("#667085"),
+
+                                ),
+
+                          )
+                          
+                        )
+                        
+                      )
+
+                    ],
+                  ),
+                  //   ],
+                  // ),
+                ),
+
+
+                // SSO
+                Row(
+
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                  children: [
+
+                    Expanded(
+
+                      child: InkWell(
+
+                        onTap: () => Navigator.pop(context),
+
+                        child: Container(
+
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+
+                          decoration: BoxDecoration(
+
+                            border: Border.all( width: 0.8, color: SmartpayColors.smartpayGray.withOpacity(0.2)),
+
+                            borderRadius: BorderRadius.circular(13)
+
+                          ),
+
+                          child: Center(
+
+                            child: Image.asset(
+
+                              SmartpayImagesAssets.google,
+
+                              width: 25,
+
+                              height: 25,
+
+                            )
+
+                          ),
+
+                        )
+
+                      )
+
+                    ),
+
+                    SizedBox( width: Common.Ws(0.04),),
+
+                    Expanded(
+
+                      child: InkWell(
+
+                        onTap: () => Navigator.pop(context),
+
+                        child: Container(
+
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+
+                          decoration: BoxDecoration(
+
+                            border: Border.all( width: 0.8, color: SmartpayColors.smartpayGray.withOpacity(0.2)),
+
+                            borderRadius: BorderRadius.circular(13)
+
+                          ),
+
+                          child: Center(
+
+                            child: Image.asset(
+
+                              SmartpayImagesAssets.apple,
+
+                              width: 25,
+
+                              height: 25,
+
+                            )
+
+                          ),
+
+                        )
+
+                      )
+
+                    )
+
+                  ],
+
+                ),
+
+                SizedBox(height: Common.Hs(0.1),),
+
+                Padding(
+                
                   padding: const EdgeInsets.only( top: 12 ),
 
                   child: Center(
@@ -428,10 +362,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           SmartpayTextStrings.haveAccount,
 
-                          style: TextStyle(
+                          style: context.textSize.titleMedium?.copyWith(
 
-                            color: SmartpayColors.smartpayGray
-                            
+                            color: HexColor("#6B7280"),
+
+                            fontSize: (context.textSize.titleMedium?.fontSize ?? 0.0) + 1.5,
+
+                            fontWeight: FontWeight.w200
+
                           ),
 
                         ),
@@ -446,12 +384,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           
                           child: Text(
 
-                            SmartpayTextStrings.login,
+                            "Sign In",
 
-                            style: context.textSize.bodyMedium?.copyWith(
+                            style: context.textSize.titleMedium?.copyWith(
 
-                              fontWeight: FontWeight.w500
-                              
+                              color: SmartpayColors.smartpaySecondaryColor,
+
+                              fontSize: (context.textSize.titleMedium?.fontSize ?? 0.0) + 1.5,
+
+                              fontWeight: FontWeight.w700
+
                             ),
 
                           )
@@ -469,7 +411,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               ],
 
-            ),
+            )
 
           ),
 

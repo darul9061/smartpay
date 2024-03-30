@@ -8,12 +8,13 @@ import 'package:smartpay/utils/hexcolor.dart';
 
 class SmartpayColors {
   static Color smartpayPrimaryColor = HexColor("#111827");
-  static Color smartpaySecondaryColor = HexColor("#2FA2B9");
-  static Color smartpayGray = HexColor("#111827");
-  static Color smartpayLightAsh = HexColor("#F9FAFB");
+  static Color smartpaySecondaryColor = HexColor("#0A6375");
+  static Color smartpayGray = HexColor("#111827").withOpacity(0.3);
+  static Color smartpayLightAsh = HexColor("#111827").withOpacity(0.1);
+  static Color smartpayLighterAsh = HexColor("#111827").withOpacity(0.04);
   static Color smartpayBlack = HexColor("#1C1616");
   static Color smartpayRed = HexColor("#F14914");
-  static Color smartpayGreen = HexColor("#289A7F");
+  static Color smartpayGreen = HexColor("#2FA2B9");
   static Color smartpayGreen2 = HexColor("#027A48");
   static Color smartpayWhiteGreen = HexColor("#ECFDF3");
   static Color smartpayBlueishWhite = HexColor("#F9FAFD");
@@ -27,88 +28,44 @@ class SmartpayColors {
 class SmartpayIconsAssets {
   static const String basePath = "assets/icons/";
 
-  static String calendar = "${basePath}calendar.png";
-  static String eye = "${basePath}eye.png";
-  static String bell = "${basePath}bell.png";
-  static String home = "${basePath}home.png";
-  static String homeLight = "${basePath}home_light.png";
-  static String messageCircle = "${basePath}message-circle.png";
-  static String messageCircleLight = "${basePath}message-circle-light.png";
-  static String user = "${basePath}user.png";
-  static String userBig = "${basePath}user_big.png";
-  static String calendar2 = "${basePath}calendar2.png";
-  static String filter = "${basePath}mi_filter.png";
-  static String users = "${basePath}users.png";
-  static String video = "${basePath}video.png";
-  static String phone = "${basePath}phone.png";
-  static String asthma = "${basePath}asthma.png";
-  static String award = "${basePath}award.png";
-  static String calendar3 = "${basePath}calendar3.png";
-  static String video2 = "${basePath}video2.png";
-  static String panic = "${basePath}panic.png";
-  static String wallet = "${basePath}wallet.png";
-  static String wallet2 = "${basePath}wallet2.png";
-  static String yuck = "${basePath}accessibility.png";
-  static String accessibility = "${basePath}accessibility.png";
-  static String thumbsUp = "${basePath}thumbs-up.png";
-  static String cough = "${basePath}cough.png";
-  static String ill = "${basePath}ill.png";
-  static String checkBlue = "${basePath}check_blue.png";
-  static String locationBold = "${basePath}location_bold.png";
-  static String locationLightBlue = "${basePath}location_light_blue.png";
-  static String naira = "${basePath}naira.png";
-  static String send = "${basePath}send.png";
-  static String smile = "${basePath}smile.png";
-  static String fileText = "${basePath}file-text.png";
-  static String activity = "${basePath}activity.png";
-  static String logOut = "${basePath}log-out.png";
-  static String logIn = "${basePath}log-in.png";
-  static String copyWhite = "${basePath}copy.png";
-  static String droplet = "${basePath}droplet.png";
-  static String meds = "${basePath}medicines.png";
-  static String heart = "${basePath}heart.png";
-  static String makiDoctor = "${basePath}maki_doctor.png";
-  static String share2 = "${basePath}share-2.png";
-  static String snoozeTime = "${basePath}snooze_time.png";
-  static String tubeVirus = "${basePath}tube_virus.png";
-  static String handCoin = "${basePath}hand-coin-outline.png";
-  static String thermometer = "${basePath}thermometer.png";
-  static String dumbell = "${basePath}dumbell.png";
-  static String dollarSignBlue = "${basePath}dollar-sign.png";
-  static String videoLight = "${basePath}video_light.png";
-  static String trash2 = "${basePath}trash-2.png";
-  static String loadingStethoscope = "${basePath}loading_stethoscope.png";
-  static String envelope = "${basePath}envelope.png";
-  static String globe = "${basePath}globe.png";
-  static String plus = "${basePath}plus.png";
-  static String cry = "${basePath}cry.png";
+  static String thumbStar = "${basePath}thumb_star.png";
+  static String check = "${basePath}check.png";
+  static String search = "${basePath}search.png";
 }
 
 class SmartpayImagesAssets {
   static const String basePath = "assets/images/";
 
-  static String smartpayLongLogo = "${basePath}smartpay_long_logo.png";
-  static String doctorPose = "${basePath}doctor_pose.png";
-  static String microscope = "${basePath}microscope.png";
-  static String takeDrug = "${basePath}take_drug.png";
-  static String femaleDoc = "${basePath}female_doc.png";
-  static String femaleDocThinBorder = "${basePath}female_doc_thin_border.png";
-  static String toon1 = "${basePath}toon1.png";
-  static String toon2 = "${basePath}toon2.png";
-  static String toon3 = "${basePath}toon3.png";
+  static const String smartpayLogo = "${basePath}Logo.png";
+  static const String appPhoneFinance = "${basePath}device_illustration.png";
+  static const String appPhoneFinanceGraph = "${basePath}graph_illustration.png";
+  static const String phoneTransactionIllustration = "${basePath}phone_transaction_illustration.png";
+  static const String transactionIllustration = "${basePath}transaction_illustration.png";
+  static const String userIllustration = "${basePath}user_illustration.png";
+  static const String lockIllustration = "${basePath}lock_illustration.png";
+  static const String google = "${basePath}google.png";
+  static const String apple = "${basePath}apple.png";
+  static const String doctorPose = "${basePath}doctor_pose.png";
+  static const String microscope = "${basePath}microscope.png";
+  static const String takeDrug = "${basePath}take_drug.png";
+  static const String femaleDoc = "${basePath}female_doc.png";
+  static const String femaleDocThinBorder = "${basePath}female_doc_thin_border.png";
+  static const String toon1 = "${basePath}toon1.png";
+  static const String toon2 = "${basePath}toon2.png";
+  static const String toon3 = "${basePath}toon3.png";
   static const String paystack = "${basePath}paystack.png";
   static const String flutterwave = "${basePath}flutterwave.png";
   static const String paypal = "${basePath}paypal.png";
-  static String crumbs = "${basePath}crumbs.png";
-  static String stethoscope = "${basePath}stethoscope.png";
-  static String stethoscopeWider = "${basePath}stethoscope_wider.png";
-  static String jarWider = "${basePath}jar_wider.png";
-  static String jar = "${basePath}jar.png";
-  static String mastercardLogo = "${basePath}mastercard-logo.png";
-  static String barChart = "${basePath}bar_chart.png";
-  static String lineChart = "${basePath}line_chart.png";
-  static String doc1 = "${basePath}doc1.png";
-  static String doc2 = "${basePath}doc2.png";
+  static const String crumbs = "${basePath}crumbs.png";
+  static const String stethoscope = "${basePath}stethoscope.png";
+  static const String stethoscopeWider = "${basePath}stethoscope_wider.png";
+  static const String jarWider = "${basePath}jar_wider.png";
+  static const String jar = "${basePath}jar.png";
+  static const String mastercardLogo = "${basePath}mastercard-logo.png";
+  static const String barChart = "${basePath}bar_chart.png";
+  static const String lineChart = "${basePath}line_chart.png";
+  static const String doc1 = "${basePath}doc1.png";
+  static const String doc2 = "${basePath}doc2.png";
 }
 
 class SmartpaySharedPreferences {
@@ -126,42 +83,35 @@ class SmartpaySharedPreferences {
   static const String _sharePrefUser = "user";
   // static GlobalKey<NavigatorState> navKey = GlobalKey();
 
-
-
   static Future<UserDetailModel?> getUserInfo({bool showWarning = true}) async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? encodedSignedUpUser = prefs.getString(_sharePrefUser );
+    String? encodedSignedUpUser = prefs.getString(_sharePrefUser);
 
-    if (encodedSignedUpUser == null){ 
-      
-      if(showWarning){ Common.smartpayToast("Failed to get user information"); } 
-      
-      return null; 
-      
-    };
+    if (encodedSignedUpUser == null) {
+      if (showWarning) {
+        Common.smartpayToast("Failed to get user information");
+      }
 
-    return UserDetailModel.fromJson( jsonDecode(  encodedSignedUpUser  ) );
+      return null;
+    }
+    ;
 
+    return UserDetailModel.fromJson(jsonDecode(encodedSignedUpUser));
   }
 
   static Future<bool> putUserInfo(UserDetailModel userDetailModel) async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    return await prefs.setString(_sharePrefUser, jsonEncode( userDetailModel.toJson() ) );
-
+    return await prefs.setString(
+        _sharePrefUser, jsonEncode(userDetailModel.toJson()));
   }
 
   static Future<bool> clearUserInfo() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     return await prefs.remove(_sharePrefUser);
-
   }
-
 
   static void setDeviceName(String deviceName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -206,12 +156,12 @@ class SmartpaySharedPreferences {
 }
 
 class SmartpayTextStrings {
-
   static const String empty = "";
 
   static const String welcomeToSmartpayWelcomeScreen = "Welcome to Smartpay";
 
-  static String welcomeToSmartpayBodyWelcomeScreen = "Easily find doctors, schedule virtual consultations, order lab tests, and medications, all from the comfort of your own home.";
+  static String welcomeToSmartpayBodyWelcomeScreen =
+      "Easily find doctors, schedule virtual consultations, order lab tests, and medications, all from the comfort of your own home.";
 
   static const String login = "Log in";
 
@@ -219,11 +169,17 @@ class SmartpayTextStrings {
 
   static const String loginTitle = "Login to your Account";
 
-  static const String verifyTitle = "Verify Your Account";
+  static const String verifyTitle = "Verify it's you";
 
-  static const String signUpTitle = "Sign up to get started.";
+  static const String setupPINtitle = "Set your PIN code";
+
+  static const String signUpTitle = "Hi There! 👋";
 
   static const String emailInputLabel = "Email address";
+
+  static const String username = "Username";
+
+  static const String country = "Country";
 
   static const String newPasswordInputLabel = "New Password";
 
@@ -249,11 +205,13 @@ class SmartpayTextStrings {
 
   static const String fieldEmpty = "Field must not be empty";
 
-  static const String didNotGetVerifCode = "Didn’t get verification code? Resend code in ";
+  static const String resendCode = "Resend Code ";
 
   static const String sentCodeTo = "Enter the 6 digit verification code sent to ";
 
-  static const String verifyAccnt = "Verify Account";
+  static const String confirm = "Confirm";
+
+  static const String createPIN = "Create PIN";
 
   static const String welcome = "Welcome, ";
 
@@ -264,7 +222,7 @@ class SmartpayTextStrings {
   static const String consultTopSpec = "Consult with top Specialists";
 
   static const String doctorNow = "Doctor Now";
-  
+
   static const String findDoctors = "Find Doctors";
 
   static const String connectToADocImmediately = "Connect to a doctor immediately";
@@ -393,7 +351,8 @@ class SmartpayTextStrings {
 
   static const String enterPersonalDetails = "Enter your Personal Details";
 
-  static const String reportGenWithName = "Report will be generated with this name";
+  static const String reportGenWithName =
+      "Report will be generated with this name";
 
   static const String enterLocation = "Enter your Location";
 
@@ -401,7 +360,8 @@ class SmartpayTextStrings {
 
   static const String searchForDrugs = "Search for drugs";
 
-  static const String acknowledgeOrder = "I acknowledge that someone will be available to receive my order";
+  static const String acknowledgeOrder =
+      "I acknowledge that someone will be available to receive my order";
 
   static const String myChats = "My Chats";
 
@@ -417,7 +377,8 @@ class SmartpayTextStrings {
 
   static const String reasonForReschedule = "Reason for Reschedule";
 
-  static const String sayMoreYouNeedReschedule = "Say more about why you need to reshedule";
+  static const String sayMoreYouNeedReschedule =
+      "Say more about why you need to reshedule";
 
   static const String bookAgain = "Book Again";
 
@@ -495,7 +456,8 @@ class SmartpayTextStrings {
 
   static const String paymentHist = "Payment History";
 
-  static const String trackHealthWellnessGoals = "Track your health and wellness goals";
+  static const String trackHealthWellnessGoals =
+      "Track your health and wellness goals";
 
   static const String addNew = "Add New";
 
@@ -519,7 +481,8 @@ class SmartpayTextStrings {
 
   static const String letGetKnowYou = "Let's get to know you!";
 
-  static const String enterEmailAssocAcct = "Enter the email associated with your account";
+  static const String enterEmailAssocAcct =
+      "Enter the email associated with your account";
 
   static const String enterANewPassword = "Enter a new password";
 
@@ -529,7 +492,8 @@ class SmartpayTextStrings {
 
   static const String changePlanTitle = "Change Plan";
 
-  static const String successAccountCreationMessage = "You have successfully created an account on Smartpay";
+  static const String successAccountCreationMessage =
+      "You have successfully created an account on Smartpay";
 
   static const String bookNow = "Book Now";
 

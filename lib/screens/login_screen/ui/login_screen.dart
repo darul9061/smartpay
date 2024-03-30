@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartpay/components/appbar.dart';
 import 'package:smartpay/components/buttons.dart';
-import 'package:smartpay/components/card.dart';
 import 'package:smartpay/components/textinput.dart';
 import 'package:smartpay/screens/forgot_password_screen/ui/forgot_password_screen.dart';
 import 'package:smartpay/screens/login_screen/logic/login_screen_bloc.dart';
-import 'package:smartpay/screens/root_access_screens/root_access_screen.dart';
 import 'package:smartpay/screens/signup_screen/ui/signup_screen.dart';
-import 'package:smartpay/state_manager/central_bloc.dart';
+import 'package:smartpay/utils/common.dart';
 import 'package:smartpay/utils/constants.dart';
+import 'package:smartpay/utils/hexcolor.dart';
 import 'package:smartpay/utils/media_query.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -35,238 +34,391 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
 
-    // emailEditingController.text = "nidrosulte@gufum.com";
-    // passwordEditingController.text = "Gamestop2468@";
+    return Scaffold(
 
-    return BlocListener<CentralBLoc, CentralBLocState>(
+      appBar: SmartpayAppbars.plain( context, isTransparent: true ),
 
-      listenWhen: (previous, current) => current.patientDetails != null,
-      
-      listener: (context, centralBlocState){
+      body: SafeArea(
 
-        Navigator.pushReplacementNamed(context, RootAccessScreen.routeName);
+        child: SingleChildScrollView(
 
-      },
+          child: Container(
 
-      child: Scaffold(
+            padding: const EdgeInsets.symmetric( horizontal: 20 ),
 
-        appBar: SmartpayAppbars.plain( context, leadingWidget: Image.asset( SmartpayImagesAssets.smartpayLongLogo ), isTransparent: true ),
+            // height: context.screenHeight,
 
-        body: SafeArea(
+            width: context.screenWidth,
 
-          child: SingleChildScrollView(
+            child: Column(
 
-            child: Container(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
 
-              padding: const EdgeInsets.symmetric( horizontal: 20 ),
+              mainAxisAlignment: MainAxisAlignment.start,
 
-              height: context.screenHeight,
+              children: [
 
-              width: context.screenWidth,
+                Padding(
+                  
+                  padding: const EdgeInsets.only( top: 26, bottom: 13),
+                  
+                  child: Text(
 
-              child: Column(
+                    SmartpayTextStrings.signUpTitle,
 
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                    style: context.textSize.titleLarge?.copyWith(
 
-                children: [
+                      fontWeight: FontWeight.bold,
 
-                  Padding(
-                    
-                    padding: const EdgeInsets.only( top: 26, bottom: 22 ),
-                    
-                    child: Text(
+                      fontSize: (context.textSize.titleLarge?.fontSize ?? 0.0) * 1.1,
 
-                      SmartpayTextStrings.loginTitle,
+                      color: SmartpayColors.smartpayBlack
 
-                      style: context.textSize.titleLarge?.copyWith(
+                    ),
 
-                        fontWeight: FontWeight.bold,
+                  )
 
-                        color: SmartpayColors.smartpayBlack
+                ),
+
+                Padding(
+                  
+                  padding: const EdgeInsets.only( bottom: 10 ),
+                  
+                  child: Text(
+
+                    "Welcome back, Sign in to your account",
+
+                    textAlign: TextAlign.left,
+
+                    style: context.textSize.titleMedium?.copyWith(
+
+                      color: HexColor("#6B7280"),
+
+                      fontSize: (context.textSize.titleMedium?.fontSize ?? 0.0) + 1.5,
+
+                      fontWeight: FontWeight.w200
+
+                    ),
+
+                  )
+                  
+                ),
+
+                Form(
+
+                  key: formKey,
+
+                  child: Column(
+
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+
+                    children: [
+
+                      TextInput(
+                        
+                        controller: emailEditingController, 
+                        
+                        textEntry: SmartpayTextStrings.emailInputLabel
+                        
+                      ),
+
+                      TextInput(
+                        
+                        controller: passwordEditingController, 
+                        
+                        textEntry: SmartpayTextStrings.passwordInputLabel,
+
+                        obscureText: true,
+                        
+                      ),
+
+                      Padding(
+
+                        padding: const EdgeInsets.symmetric(vertical: 22),
+
+                        child: InkWell( 
+
+                          onTap: () {
+                            
+                            Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
+
+                          },
+                          
+                          child: Text(
+                          
+                            "Forgot Password?",
+
+                            style: context.textSize.titleMedium?.copyWith(
+
+                              color: SmartpayColors.smartpaySecondaryColor,
+
+                              fontWeight: FontWeight.w700,
+
+                              fontSize: (context.textSize.titleMedium?.fontSize ?? 0.0) + 1
+
+                            )
+                            
+                          ),
+                          
+                        ),
 
                       ),
 
-                    )
-                  ),
+                      SmartpayButtons.plain(
 
-                  SmartpayCard.simpleCard(
+                        () {
 
-                    context,
+                          if( (formKey.currentState?.validate() ?? false) ){
 
-                    topMargin: 0,
+                            formKey.currentState?.save();
 
-                    bottomMargin: 0,
-                    
-                    child: Form(
+                            FocusManager.instance.primaryFocus?.unfocus();
 
-                      key: formKey,
+                            context.read<LoginScreenBLoc>().add(
 
-                      child: Column(
-
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-
-                        children: [
-
-                          TextInput(
-                            
-                            controller: emailEditingController, 
-                            
-                            textEntry: SmartpayTextStrings.empty, 
-                            
-                            labelText: SmartpayTextStrings.emailInputLabel
-                            
-                          ),
-
-                          TextInput(
-                            
-                            controller: passwordEditingController, 
-                            
-                            textEntry: SmartpayTextStrings.empty, 
-                            
-                            labelText: SmartpayTextStrings.passwordInputLabel,
-
-                            obscureText: true,
-
-                            fromLogin: true,
-                            
-                          ),
-
-                          InkWell(
-
-                            onTap: () => Navigator.pushNamed(context, ForgotPasswordScreen.routeName),
-
-                            child: Padding(
-                              
-                              padding: const EdgeInsets.only( top: 18, bottom: 20),
-
-                              child: Text(
-
-                                SmartpayTextStrings.forgotPasswordQuestion,
-
-                                style: context.textSize.bodyMedium?.copyWith(
-
-                                  fontWeight: FontWeight.w600
-
-                                ),
+                              LoginScreenTapEvent(
+                                
+                                email: emailEditingController.text, 
+                                
+                                password: passwordEditingController.text
                                 
                               )
-                            )
-                            
-                          ),
 
-                          SmartpayButtons.plain(
+                            );
 
-                            () {
+                          }
 
-                              if(formKey.currentState?.validate() ?? false){
+                        },
+                        
+                        title: "Sign In"
 
-                                formKey.currentState?.save();
+                      ),
 
-                                FocusManager.instance.primaryFocus?.unfocus();
+                      const SizedBox(
 
-                                context.read<LoginScreenBLoc>().add(
-
-                                  LoginScreenTapEvent(
-
-                                    email: emailEditingController.text.trim(),
-
-                                    password: passwordEditingController.text.trim()
-
-                                  )
-                                  
-                                );
-
-                              }
-
-                            },
-                            
-                            title: SmartpayTextStrings.login
-
-                          ),
-
-                          const SizedBox(
-
-                            height: 20,
-
-                          )
-
-                        ],
+                        height: 20,
 
                       )
-                      
-                    )
 
+                    ],
+
+                  )
+                  
+                ),
+
+
+                Padding(
+
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+
+                  child: Stack(
+
+                    children: [
+
+                      Center(
+
+                        child: Divider( thickness: 2, color: HexColor("#F2F4F7") )
+                        
+                      ),
+
+                      Center(
+
+                        child: Container(
+
+                          padding: const EdgeInsets.symmetric(horizontal: 9),
+
+                          color: Colors.white,
+
+                          child: Text(
+
+                            "OR",
+
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+
+                                  color: HexColor("#667085"),
+
+                                ),
+
+                          )
+                          
+                        )
+                        
+                      )
+
+                    ],
                   ),
+                  //   ],
+                  // ),
+                ),
 
-                  Padding(
-                    
-                    padding: const EdgeInsets.only( top: 12 ),
+                // SSO
+                Row(
 
-                    child: Center(
-                      
-                      child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                        mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
 
-                        children: [
+                    Expanded(
 
-                          Text(
+                      child: InkWell(
 
-                            SmartpayTextStrings.noAccount,
+                        onTap: () => Navigator.pop(context),
 
-                            style: TextStyle(
+                        child: Container(
 
-                              color: SmartpayColors.smartpayGray
-                              
-                            ),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+
+                          decoration: BoxDecoration(
+
+                            border: Border.all( width: 0.8, color: SmartpayColors.smartpayGray.withOpacity(0.2)),
+
+                            borderRadius: BorderRadius.circular(13)
 
                           ),
 
-                          TextButton(
-                            
-                            onPressed: (){
+                          child: Center(
 
-                              Navigator.pushNamed(context, SignUpScreen.routeName);
+                            child: Image.asset(
 
-                            }, 
-                            
-                            child: Text(
+                              SmartpayImagesAssets.google,
 
-                              SmartpayTextStrings.signUp,
+                              width: 25,
 
-                              style: context.textSize.bodyMedium?.copyWith(
-
-                                fontWeight: FontWeight.w500
-                                
-                              ),
+                              height: 25,
 
                             )
 
-                          )
+                          ),
 
-                        ]
+                        )
 
                       )
-
 
                     ),
-                  
+
+                    SizedBox( width: Common.Ws(0.04),),
+
+                    Expanded(
+
+                      child: InkWell(
+
+                        onTap: () => Navigator.pop(context),
+
+                        child: Container(
+
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+
+                          decoration: BoxDecoration(
+
+                            border: Border.all( width: 0.8, color: SmartpayColors.smartpayGray.withOpacity(0.2)),
+
+                            borderRadius: BorderRadius.circular(13)
+
+                          ),
+
+                          child: Center(
+
+                            child: Image.asset(
+
+                              SmartpayImagesAssets.apple,
+
+                              width: 25,
+
+                              height: 25,
+
+                            )
+
+                          ),
+
+                        )
+
+                      )
+
+                    )
+
+                  ],
+
+                ),
+
+                SizedBox(height: Common.Hs(0.1),),
+
+                Padding(
+                
+                  padding: const EdgeInsets.only( top: 12 ),
+
+                  child: Center(
+                    
+                    child: Row(
+
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+
+                        Text(
+
+                          SmartpayTextStrings.noAccount,
+
+                          style: context.textSize.titleMedium?.copyWith(
+
+                            color: HexColor("#6B7280"),
+
+                            fontSize: (context.textSize.titleMedium?.fontSize ?? 0.0) + 1.5,
+
+                            fontWeight: FontWeight.w200
+
+                          ),
+
+                        ),
+
+                        TextButton(
+                          
+                          onPressed: (){
+
+                            Navigator.pushNamed(context, SignUpScreen.routeName);
+
+                          }, 
+                          
+                          child: Text(
+
+                            SmartpayTextStrings.signUp,
+
+                            style: context.textSize.titleMedium?.copyWith(
+
+                              color: SmartpayColors.smartpaySecondaryColor,
+
+                              fontSize: (context.textSize.titleMedium?.fontSize ?? 0.0) + 1.5,
+
+                              fontWeight: FontWeight.w700
+
+                            ),
+
+                          )
+
+                        )
+
+                      ]
+
+                    )
+
+
                   ),
+                
+                ),
 
-                ],
+              ],
 
-              ),
+            )
 
-            ),
+          ),
 
-          )
-        
         )
-    
-      )
+      
+      ),
 
     );
 
   }
-
 }

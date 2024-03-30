@@ -1,11 +1,11 @@
-class LoginResModel {
+class SetupProfileResModel {
   bool? status;
   String? message;
   Data? data;
 
-  LoginResModel({this.status, this.message, this.data});
+  SetupProfileResModel({this.status, this.message, this.data});
 
-  LoginResModel.fromJson(Map<String, dynamic> json) {
+  SetupProfileResModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
@@ -44,46 +44,29 @@ class Data {
 }
 
 class User {
-  String? id;
   String? fullName;
   String? username;
   String? email;
-  String? phone;
-  String? phoneCountry;
   String? country;
-  String? avatar;
+  String? id;
 
-  User(
-      {this.id,
-      this.fullName,
-      this.username,
-      this.email,
-      this.phone,
-      this.phoneCountry,
-      this.country,
-      this.avatar});
+  User({this.fullName, this.username, this.email, this.country, this.id});
 
   User.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
     fullName = json['full_name'];
     username = json['username'];
     email = json['email'];
-    phone = json['phone'];
-    phoneCountry = json['phone_country'];
     country = json['country'];
-    avatar = json['avatar'];
+    id = json['id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
     data['full_name'] = this.fullName;
     data['username'] = this.username;
     data['email'] = this.email;
-    data['phone'] = this.phone;
-    data['phone_country'] = this.phoneCountry;
     data['country'] = this.country;
-    data['avatar'] = this.avatar;
+    data['id'] = this.id;
     return data;
   }
 }

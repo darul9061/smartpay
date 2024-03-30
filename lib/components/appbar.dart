@@ -34,29 +34,51 @@ class SmartpayAppbars {
 
       automaticallyImplyLeading: leadingWidget != null? false : true,
 
-      leading: Container(
+      leading: Row( 
+        
+        children: [
 
-        padding: const EdgeInsets.only(left: 13),
+          Padding(
+            
+            padding: const EdgeInsets.only(left: 20),
+          
+            child: InkWell(
 
-        color: Colors.transparent,
+              onTap: () => Navigator.pop(context),
 
-        child: InkWell(
+              child: Container(
 
-          onTap: () => Navigator.pop(context),
+                width: 42,
 
-          child: Align(
+                height: 42,
 
-            alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
 
-            child: leadingWidget ?? const Icon(
+                  border: Border.all( width: 0.8, color: SmartpayColors.smartpayGray.withOpacity(0.2)),
 
-              Icons.arrow_back_sharp
+                  borderRadius: BorderRadius.circular(13)
+
+                ),
+
+                child: const Center(
+
+                  child: Icon(
+
+                    Icons.chevron_left,
+
+                    color: Colors.black
+
+                  )
+
+                ),
+
+              )
 
             )
 
           )
 
-        ),
+        ]
 
       ),
 
@@ -104,201 +126,5 @@ class SmartpayAppbars {
 
   }
 
-
-
-  static PreferredSize customBlueAppBarWithSearch(BuildContext context, TextEditingController inputController, String backButtonTitle, String hintText){
-    
-    return PreferredSize(
-
-      preferredSize: const Size.fromHeight(155),
-
-      child: SafeArea(
-        
-        child:  Container(
-
-          padding: const EdgeInsets.symmetric( horizontal: 18, vertical: 22 ),
-
-          color: SmartpayColors.smartpayPrimaryColor,
-
-          child:  Column(
-
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-            crossAxisAlignment: CrossAxisAlignment.start,
-
-            children: [
-
-              TextButton.icon(
-
-                style: TextButton.styleFrom(
-
-                  minimumSize: Size.zero,
-
-                  padding: EdgeInsets.zero
-
-                ),
-                
-                onPressed: (){
-
-                  Navigator.pop(context);
-
-                },
-                
-                icon: Icon(
-
-                      Icons.arrow_back_rounded,
-
-                      color: Colors.white,
-
-                    ),
-
-                label: 
-
-                  Text(
-                    
-                    backButtonTitle,
-
-                    style: context.textSize.bodyLarge?.copyWith(
-
-                      color: Colors.white,
-
-                      fontWeight: FontWeight.bold
-
-                    ),
-
-                  ),
-                    
-              ),
-
-              // Row(
-
-              //   children: [
-
-              //       Icon(
-
-              //         Icons.arrow_back_rounded,
-
-              //         color: Colors.white,
-
-              //       ),
-
-              //     SizedBox(
-                    
-              //       width: 12,
-                    
-              //     ),
-
-              //     Text(
-                    
-              //       SmartpayTextStrings.findDoctors,
-
-              //       style: context.textSize.bodyLarge?.copyWith(
-
-              //         color: Colors.white,
-
-              //         fontWeight: FontWeight.bold
-
-              //       ),
-
-              //     )
-
-              //   ],
-
-              // ),
-
-              ClipRRect(
-
-                borderRadius: BorderRadius.circular(10),
-
-                child: Container(
-
-                  height: 58,
-
-                  padding: const EdgeInsets.symmetric( horizontal: 6),
-
-                  color: Colors.white,
-
-                  child: Row(
-
-                    children: [
-
-                      Padding(
-
-                        padding: EdgeInsets.only(left: 8, right: 7),
-
-                        child:  Icon(
-
-                          Icons.search,
-
-                          color: SmartpayColors.smartpayPrimaryColor,
-
-                        )
-                          
-                      ),
-
-                      Expanded(
-
-                        child: TextField(
-
-                          controller: inputController,
-
-                          decoration: InputDecoration(
-
-                            enabledBorder: InputBorder.none,
-
-                            focusedBorder: InputBorder.none,
-
-                            border: InputBorder.none,
-
-                            hintText: hintText,
-
-                            hintStyle: context.textSize.bodyMedium?.copyWith(
-
-                              fontWeight: FontWeight.w400,
-
-                              color: SmartpayColors.smartpayGray
-
-                            )
-                            
-                          ),
-
-                        )
-
-                      ),
-
-                      IconButton(
-                        
-                        onPressed: null, 
-                        
-                        icon: Image.asset(
-
-                          SmartpayIconsAssets.filter,
-
-                          width: 25,
-
-                        )
-
-                      )
-
-                    ],
-
-                  ),
-
-                )
-
-              )
-
-            ],
-
-          )
-
-        )
-
-      )
-
-
-    );
-
-  }
   
 }

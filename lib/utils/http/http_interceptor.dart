@@ -27,7 +27,7 @@ class HttpInterceptor extends Interceptor {
 
     debugPrint(" USER TOKENS =======> ${res.userToken} - ${passedBearerToken} ");
 
-    debugPrint("${{"Authorization": passedBearerToken != null ? "Bearer $passedBearerToken" : "Bearer ${res.userToken}"}} ");
+    debugPrint("${{"Authorization": passedBearerToken != null ? "Bearer $passedBearerToken" : "Bearer ${res.userToken}"}} }");
 
     options.headers.addAll({"Authorization": passedBearerToken != null ? "Bearer $passedBearerToken" : "Bearer ${res.userToken}"});
 
@@ -52,78 +52,10 @@ class HttpInterceptor extends Interceptor {
 
     debugPrint("ON RESPONSE");
 
-    UserDetailModel? userInfo = await  SmartpaySharedPreferences.getUserInfo();
-
-    if(err.response?.statusCode == 401){
-
-      try{
-
-        ExpiredTokenResModel expiredTokenResModel = ExpiredTokenResModel.fromJson(err.response?.data);
-
-        if( expiredTokenResModel.code == "token_not_valid" ){
-
-          RefreshAccessTokenResModel? newTokenRes = await _getNewToken( userInfo?.refreshToken ?? "" );
-
-          if(newTokenRes is! RefreshAccessTokenResModel){
-
-            Common.smartpayToast("Failed to refresh token", isError: true);
-
-            return;
-
-          }
-
-          await SmartpaySharedPreferences.putUserInfo(
-
-            userInfo!..userToken = newTokenRes.access
-
-          );
-
-
-          Response response = await Dio().fetch(_lastRequestOptions!);
-
-          handler.resolve(response);
-
-          return;
-
-        }
-
-      }catch(e){
-
-        debugPrint("HTTP INTERCEPTOR RESPONSE::: $e");
-
-      }
-      
-    }
-
     handler.next(err);
 
   }
 
 
-
-
-
-  Future<RefreshAccessTokenResModel?> _getNewToken(String refreshToken) async {
-
-    try {
-
-      print("httpPost ----------------->");
-
-      var res = await _httpMethods.httpPost( HttpConstants.refreshToken, data: { "refresh": refreshToken } );
-
-      return RefreshAccessTokenResModel.fromJson(res);
-
-    } catch (e) {
-
-      debugPrint("http repo error: RefreshTokenResModel$e");
-
-    }
-
-    return null;
-
-
-  }
-
-  
   
 }

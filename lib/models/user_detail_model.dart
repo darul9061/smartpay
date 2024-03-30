@@ -1,56 +1,67 @@
 class UserDetailModel {
-  String? firstName;
-  String? lastName;
-  String? phoneNumber;
+        
   String? email;
+  String? fullName;
+  String? username;
+  String? country;
   String? id;
   int? userType;
   String? userToken;
   String? refreshToken;
-  String? patientId;
-  String? agoraUserId;
-  String? agoraUserToken;
+  String? userEncryptedPin;
 
   UserDetailModel(
-      {this.firstName,
-      this.lastName,
-      this.phoneNumber,
+      {
+      this.fullName,
+      this.username,
+      this.country,
       this.email,
       this.id,
       this.userType,
       this.userToken,
       this.refreshToken,
-      this.patientId,
-      this.agoraUserId,
-      this.agoraUserToken});
+      this.userEncryptedPin});
 
   UserDetailModel.fromJson(Map<String, dynamic> json) {
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    phoneNumber = json['phone_number'];
+    fullName = json['full_name'];
+    username = json['username'];
+    country = json['country'];
     email = json['email'];
     id = json['id'];
     userType = json['user_type'];
     userToken = json['user_token'];
     refreshToken = json['refresh_token'];
-    patientId = json['user_type_id'];
-    agoraUserId = json['agora_user_id'];
-    agoraUserToken = json['agora_user_token'];
+    userEncryptedPin = json['user_encrypted_pin'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['phone_number'] = this.phoneNumber;
+    data['full_name'] = this.fullName;
+    data['username'] = this.username;
+    data['country'] = this.country;
     data['email'] = this.email;
     data['id'] = this.id;
     data['user_type'] = this.userType;
     data['user_token'] = this.userToken;
-    data['refresh_token'] = this.refreshToken;
-    data['user_type_id'] = this.patientId;
-    data['agora_user_id'] = this.agoraUserId;
-    data['agora_user_token'] = this.agoraUserToken;
+    data['user_token'] = this.userToken;
+    data['user_encrypted_pin'] = this.userEncryptedPin;
     return data;
   }
+
+
+
+  Map<String, dynamic> toEncryptedJson() {
+
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['full_name'] = this.fullName;
+    data['username'] = this.username;
+    data['country'] = this.country;
+    data['email'] = this.email;
+    data['id'] = this.id;
+
+    return data;
+
+  }
+
+
 }

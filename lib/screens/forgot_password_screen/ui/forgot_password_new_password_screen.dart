@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartpay/components/appbar.dart';
 import 'package:smartpay/components/buttons.dart';
-import 'package:smartpay/components/card.dart';
 import 'package:smartpay/components/textinput.dart';
 import 'package:smartpay/screens/forgot_password_screen/logic/forgot_password_screen_bloc.dart';
 import 'package:smartpay/screens/login_screen/ui/login_screen.dart';
 import 'package:smartpay/utils/constants.dart';
+import 'package:smartpay/utils/hexcolor.dart';
 import 'package:smartpay/utils/media_query.dart';
 
 class ForgotPasswordNewPasswordScreen extends StatefulWidget {
@@ -33,7 +33,39 @@ class _ForgotPasswordNewPasswordScreenState extends State<ForgotPasswordNewPassw
 
     return Scaffold(
 
-      appBar: SmartpayAppbars.plain( context, leadingWidget: Image.asset( SmartpayImagesAssets.smartpayLongLogo ), isTransparent: true ),
+      appBar: SmartpayAppbars.plain( context, leadingWidget: Image.asset( SmartpayImagesAssets.smartpayLogo ), isTransparent: true ),
+
+      bottomNavigationBar: Padding(
+
+        padding: MediaQuery.of(context).viewInsets,
+        
+        child:  Container(
+
+          padding: const EdgeInsets.symmetric( horizontal: 20, vertical: 20),
+
+          child: SmartpayButtons.plain(
+
+            () {
+
+              if( (formKey.currentState?.validate() ?? false) ){
+
+                formKey.currentState?.save();
+
+                FocusManager.instance.primaryFocus?.unfocus();
+
+
+
+              }
+
+            },
+            
+            title: "Create new password"
+
+          )
+
+        )
+
+      ),
 
       body: SafeArea(
 
@@ -43,7 +75,7 @@ class _ForgotPasswordNewPasswordScreenState extends State<ForgotPasswordNewPassw
 
             padding: const EdgeInsets.symmetric( horizontal: 20 ),
 
-            height: context.screenHeight,
+            // height: context.screenHeight,
 
             width: context.screenWidth,
 
@@ -51,19 +83,23 @@ class _ForgotPasswordNewPasswordScreenState extends State<ForgotPasswordNewPassw
 
               crossAxisAlignment: CrossAxisAlignment.stretch,
 
+              mainAxisAlignment: MainAxisAlignment.start,
+
               children: [
 
                 Padding(
                   
-                  padding: const EdgeInsets.only( top: 26, bottom: 12 ),
+                  padding: const EdgeInsets.only( top: 26, bottom: 13),
                   
                   child: Text(
 
-                    SmartpayTextStrings.resetPassword,
+                    "Create New Password",
 
                     style: context.textSize.titleLarge?.copyWith(
 
                       fontWeight: FontWeight.bold,
+
+                      fontSize: (context.textSize.titleLarge?.fontSize ?? 0.0) * 1.1,
 
                       color: SmartpayColors.smartpayBlack
 
@@ -75,176 +111,68 @@ class _ForgotPasswordNewPasswordScreenState extends State<ForgotPasswordNewPassw
 
                 Padding(
                   
-                  padding: const EdgeInsets.only( bottom: 25 ),
+                  padding: const EdgeInsets.only( bottom: 10 ),
                   
                   child: Text(
 
-                    SmartpayTextStrings.enterANewPassword,
+                    "Please, enter a new password below different from the previous password",
 
-                    style: TextStyle(
+                    textAlign: TextAlign.left,
 
-                      fontSize: 15,
+                    style: context.textSize.titleMedium?.copyWith(
 
-                      color: SmartpayColors.smartpayGray
+                      color: HexColor("#6B7280"),
+
+                      fontSize: (context.textSize.titleMedium?.fontSize ?? 0.0) + 1.5,
+
+                      fontWeight: FontWeight.w200
 
                     ),
 
                   )
-
+                  
                 ),
 
-                SmartpayCard.simpleCard(
+                Form(
 
-                  context,
+                  key: formKey,
 
-                  topMargin: 0,
+                  child: Column(
 
-                  bottomMargin: 0,
-                  
-                  child: Form(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
 
-                    key: formKey,
+                    children: [
 
-                    child: Column(
+                      TextInput(
+                        
+                        controller: newPasswordEditingController, 
+                        
+                        textEntry: SmartpayTextStrings.newPasswordInputLabel,
 
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                        obscureText: true,
+                        
+                      ),
 
-                      children: [
+                      TextInput(
+                        
+                        controller: confirmPasswordEditingController, 
+                        
+                        textEntry: SmartpayTextStrings.confirmPasswordInputLabel,
 
-                        TextInput(
-                          
-                          controller: newPasswordEditingController, 
-                          
-                          textEntry: SmartpayTextStrings.empty, 
-                          
-                          labelText: SmartpayTextStrings.newPasswordInputLabel,
+                        obscureText: true,
+                        
+                      ),
 
-                          obscureText: true,
-                          
-                        ),
+                    ],
 
-                        TextInput(
-                          
-                          controller: confirmPasswordEditingController, 
-                          
-                          textEntry: SmartpayTextStrings.empty, 
-                          
-                          labelText: SmartpayTextStrings.confirmPasswordInputLabel,
-
-                          obscureText: true,
-
-                          fromLogin: true,
-                          
-                        ),
-
-                        const SizedBox(
-
-                          height: 20,
-
-                        ),
-
-                        SmartpayButtons.plain(
-
-                          () {
-
-                            if(formKey.currentState?.validate() ?? false){
-
-                              formKey.currentState?.save();
-
-                              FocusManager.instance.primaryFocus?.unfocus();
-
-                              context.read<ForgotPasswordScreenBLoc>().add(
-
-                                ForgotPasswordScreenOnTapResetEvents(
-
-                                  newPassword: newPasswordEditingController.text,
-
-                                  confirmPassword: confirmPasswordEditingController.text
-
-                                )
-                                
-                              );
-
-                            }
-
-                          },
-                          
-                          title: SmartpayTextStrings.resetPassword
-
-                        ),
-
-                        const SizedBox(
-
-                          height: 20,
-
-                        )
-
-                      ],
-
-                    )
-                    
                   )
-
-                ),
-
-                Padding(
                   
-                  padding: const EdgeInsets.only( top: 12 ),
-
-                  child: Center(
-                    
-                    child: Row(
-
-                      mainAxisAlignment: MainAxisAlignment.center,
-
-                      children: [
-
-                        Text(
-
-                          SmartpayTextStrings.rememberNow,
-
-                          style: TextStyle(
-
-                            color: SmartpayColors.smartpayGray
-                            
-                          ),
-
-                        ),
-
-                        TextButton(
-                          
-                          onPressed: (){
-
-                            Navigator.pushNamed(context, LoginScreen.routeName);
-
-                          }, 
-                          
-                          child: Text(
-
-                            SmartpayTextStrings.login,
-
-                            style: context.textSize.bodyMedium?.copyWith(
-
-                              fontWeight: FontWeight.w500
-                              
-                            ),
-
-                          )
-
-                        )
-
-                      ]
-
-                    )
-
-
-                  ),
-                
                 ),
+
 
               ],
 
-            ),
+            )
 
           ),
 

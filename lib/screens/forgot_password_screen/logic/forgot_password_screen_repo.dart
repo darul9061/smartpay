@@ -19,11 +19,11 @@ class ForgotPasswordScreenRepository {
 
       return res;
 
-      // return SignUpVerificationResModel.fromJson(res);
+      // return EmailVerificationResModel.fromJson(res);
 
     } catch (e) {
 
-      print("http repo error: SignUpVerificationResModel" + e.toString());
+      print("http repo error: EmailVerificationResModel" + e.toString());
 
     }
 
@@ -41,11 +41,11 @@ class ForgotPasswordScreenRepository {
 
       return res;
 
-      // return SignUpVerificationResModel.fromJson(res);
+      // return EmailVerificationResModel.fromJson(res);
 
     } catch (e) {
 
-      print("http repo error: SignUpVerificationResModel" + e.toString());
+      print("http repo error: EmailVerificationResModel" + e.toString());
 
     }
 
@@ -66,7 +66,7 @@ class ForgotPasswordScreenRepository {
 
     } catch (e) {
 
-      print("http repo error: SignUpVerificationResModel" + e.toString());
+      print("http repo error: EmailVerificationResModel" + e.toString());
 
     }
 

@@ -1,33 +1,13 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:smartpay/components/appbar.dart';
-import 'package:smartpay/components/bottom_nav_bar.dart';
 import 'package:smartpay/components/buttons.dart';
-import 'package:smartpay/components/card.dart';
-import 'package:smartpay/components/dropdown.dart';
-import 'package:smartpay/components/phone_num_input.dart';
 import 'package:smartpay/components/textinput.dart';
-import 'package:smartpay/models/request_models/next_of_kin_req_model.dart';
-import 'package:smartpay/screens/root_access_screens/root_access_screen.dart';
 import 'package:smartpay/screens/setup_profile_screen/logic/setup_profile_screen_bloc.dart';
-import 'package:smartpay/utils/common.dart';
+import 'package:smartpay/screens/setup_profile_screen/ui/component/country_input.dart';
+import 'package:smartpay/screens/setup_profile_screen/ui/setup_pin_screen.dart';
 import 'package:smartpay/utils/constants.dart';
 import 'package:smartpay/utils/media_query.dart';
-
-class _SetupProfileScreenInputData {
-
-  final String title;
-
-  final TextEditingController inputController;
-
-  final String? Function(String?)? validator;
-
-  const _SetupProfileScreenInputData({required this.title, required this.inputController, this.validator});
-
-}
 
 class SetupProfileScreen extends StatefulWidget {
 
@@ -44,260 +24,53 @@ class _SetupProfileScreenState extends State<SetupProfileScreen> {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  final _genders = [
-                                
-    SmartpayDropdownItemData( id: 0, title: "Male" ),
-    
-    SmartpayDropdownItemData( id: 1, title: "Female" )
+  TextEditingController firstNameEditingController = TextEditingController();
 
-  ];
+  TextEditingController lastNameEditingController = TextEditingController();
 
-  final _genotypes = [
-                                
-    SmartpayDropdownItemData( id: 0, title: "AA" ),
-                                
-    SmartpayDropdownItemData( id: 1, title: "AC" ),
-                                
-    SmartpayDropdownItemData( id: 2, title: "AS" ),
-                                
-    SmartpayDropdownItemData( id: 3, title: "CC" ),
-                                
-    SmartpayDropdownItemData( id: 4, title: "SC" ),
-                                
-    SmartpayDropdownItemData( id: 5, title: "SS" ),
+  Country? selectedCountry;
 
-  ];
+  TextEditingController userEditingController = TextEditingController();
 
-  final _bloodGroups = [
-                                
-    SmartpayDropdownItemData( id: 0, title: "A+" ),
-                                
-    SmartpayDropdownItemData( id: 1, title: "A-" ),
-                                
-    SmartpayDropdownItemData( id: 2, title: "B+" ),
-                                
-    SmartpayDropdownItemData( id: 3, title: "B-" ),
-                                
-    SmartpayDropdownItemData( id: 4, title: "O+" ),
-                                
-    SmartpayDropdownItemData( id: 5, title: "O-" ),
-                                
-    SmartpayDropdownItemData( id: 6, title: "AB+" ),
-                                
-    SmartpayDropdownItemData( id: 7, title: "AB-" ),
+  TextEditingController passwordEditingController = TextEditingController();
 
-  ];
+  bool allFieldNotEmpty = false;
 
-  final List<_SetupProfileScreenInputData> allInputFields = [
 
-    _SetupProfileScreenInputData(
-      
-      title: SmartpayTextStrings.dateOfBirth, 
-      
-      inputController: TextEditingController(),
+  bool isAllFieldsEmpty (){
 
-      validator: (p0) => null,
-      
-    ),
+    if (
 
-    _SetupProfileScreenInputData(
-      
-      title: SmartpayTextStrings.gender, 
-      
-      inputController: TextEditingController(),
+      firstNameEditingController.text.isEmpty ||
+      lastNameEditingController.text.isEmpty ||
+      selectedCountry == null ||
+      userEditingController.text.isEmpty ||
+      passwordEditingController.text.isEmpty
 
-      validator: (p0) => null,
-      
-    ),
+    ){
 
-    _SetupProfileScreenInputData(
-      
-      title: SmartpayTextStrings.bloodGroup, 
-      
-      inputController: TextEditingController(),
+      return false;
 
-      validator: (p0) => null,
-      
-    ),
+    }
 
-    _SetupProfileScreenInputData(
-      
-      title: SmartpayTextStrings.genotype, 
-      
-      inputController: TextEditingController(),
+    return true;
 
-      validator: (p0) => null,
-      
-    ),
-
-    _SetupProfileScreenInputData(
-      
-      title: SmartpayTextStrings.height, 
-      
-      inputController: TextEditingController(),
-
-      validator: (p0) => null,
-      
-    ),
-
-    _SetupProfileScreenInputData(
-      
-      title: SmartpayTextStrings.weight, 
-      
-      inputController: TextEditingController(),
-
-      validator: (p0) => null,
-      
-    ),
-
-    _SetupProfileScreenInputData(
-      
-      title: SmartpayTextStrings.contactAddress, 
-      
-      inputController: TextEditingController(),
-
-      validator: (p0) => null,
-      
-    ),
-
-    _SetupProfileScreenInputData(
-      
-      title: SmartpayTextStrings.fullnameNextOfKin, 
-      
-      inputController: TextEditingController(),
-
-      validator: (p0) {
-
-        if(p0?.isEmpty ?? false){
-
-          return "Field required";
-
-        }
-
-        return null;
-      }
-      
-    ),
-
-    _SetupProfileScreenInputData(
-      
-      title: SmartpayTextStrings.phoneNextOfKin, 
-      
-      inputController: TextEditingController(),
-
-      validator: (p0) => null,
-      
-    ),
-
-  ];
+  }
 
   @override
   Widget build(BuildContext context) {
 
+    var emailRouteData = ModalRoute.of(context)?.settings.arguments;
+
+    assert(emailRouteData is String, "Email is required as screen argument");
+
+    emailRouteData as String;
+
     return Scaffold(
 
-      appBar: SmartpayAppbars.plain( context, leadingWidget: Image.asset( SmartpayImagesAssets.smartpayLongLogo ), isTransparent: true ),
-
-      bottomNavigationBar: Padding(
-        
-        padding: MediaQuery.of(context).viewInsets,
-          
-        child: SmartpayBottomNavsBar.customBottomBar(
-
-          height: defaultTargetPlatform == TargetPlatform.android ? 80 : 100,
-          
-          child: Row(
-
-            mainAxisAlignment: MainAxisAlignment.center,
-
-            children: [
-
-              SizedBox(
-
-                width: Common.Ws(0.38),
-
-                child: SmartpayButtons.skeleton(
-
-                  () {
-
-                    Navigator.pushNamed(context, RootAccessScreen.routeName);
-
-                  },
-
-                  customView: Text(
-
-                    SmartpayTextStrings.skip,
-
-                    style: context.textSize.bodyMedium,
-
-                  ),
-                  
-                )
-                
-              ),
-
-              const SizedBox( width: 25, ),
-
-
-              SizedBox(
-
-                width: Common.Ws(0.38),
-
-                child: SmartpayButtons.plain(
-
-                  () {
-
-                    if(!(formKey.currentState?.validate() ?? true)){ return;}
-
-                    context.read<SetupProfileScreenBLoc>().add(
-                      
-                      SetupProfileScreenOnTapEvents(
-
-                        dateOfBirth: allInputFields[0].inputController.text.isEmpty? null : allInputFields[0].inputController.text.trim(),
-
-                        gender: allInputFields[1].inputController.text.isEmpty? null : allInputFields[1].inputController.text.trim(),
-
-                        bloodGroup: allInputFields[2].inputController.text.isEmpty? null : allInputFields[2].inputController.text.toUpperCase().trim(),
-
-                        genotype: allInputFields[3].inputController.text.isEmpty? null : allInputFields[3].inputController.text.toUpperCase().trim(),
-
-                        height: allInputFields[4].inputController.text.isEmpty? null : int.parse( allInputFields[4].inputController.text.trim() ),
-
-                        weight: allInputFields[5].inputController.text.isEmpty? null : int.parse( allInputFields[5].inputController.text.trim() ),
-
-                        address: allInputFields[6].inputController.text.isEmpty? null : allInputFields[6].inputController.text.trim(),
-
-                        nextOfKinReqModel: NextOfKinReqModel(
-
-                          fullName: allInputFields[7].inputController.text.isEmpty? null : allInputFields[7].inputController.text.trim(),
-
-                          phoneNumber: allInputFields[8].inputController.text.isEmpty? null : allInputFields[8].inputController.text.trim(),
-
-                        )
-
-                      )
-                      
-                    );
-
-                  },
-
-                  title: SmartpayTextStrings.continueWord
-                  
-                )
-
-              )
-
-            ],
-
-          )
-
-        )
-        
-      ),
+      appBar: SmartpayAppbars.plain( context, isTransparent: true ),
 
       body: SafeArea(
-
-        top: false,
 
         child: SingleChildScrollView(
 
@@ -305,45 +78,83 @@ class _SetupProfileScreenState extends State<SetupProfileScreen> {
 
             padding: const EdgeInsets.symmetric( horizontal: 20 ),
 
+            // height: context.screenHeight,
+
+            width: context.screenWidth,
+
             child: Column(
 
               crossAxisAlignment: CrossAxisAlignment.stretch,
 
+              mainAxisAlignment: MainAxisAlignment.start,
+
               children: [
 
+                
                 Padding(
                   
-                  padding: const EdgeInsets.only( top: 26, bottom: 12 ),
+                  padding: const EdgeInsets.only( top: 26 ),
                   
-                  child: Text(
+                  child: 
 
-                    SmartpayTextStrings.setUpYrProfile,
+                  Text(
+
+                    "Hey there! tell us a bit ",
 
                     style: context.textSize.titleLarge?.copyWith(
 
                       fontWeight: FontWeight.bold,
 
+                      fontSize: (context.textSize.titleLarge?.fontSize ?? 0.0) * 1.1,
+
                       color: SmartpayColors.smartpayBlack
 
                     ),
 
-                  )
+                  ),
 
                 ),
 
+
                 Padding(
                   
-                  padding: const EdgeInsets.only( bottom: 25 ),
+                  padding: const EdgeInsets.only( bottom: 13 ),
                   
-                  child: Text(
+                  child: RichText(
 
-                    SmartpayTextStrings.letGetKnowYou,
+                    text: TextSpan(
 
-                    style: TextStyle(
+                      text: "about ",
 
-                      fontSize: 15,
+                      style: context.textSize.titleLarge?.copyWith(
 
-                      color: SmartpayColors.smartpayGray
+                        fontWeight: FontWeight.bold,
+
+                        fontSize: (context.textSize.titleLarge?.fontSize ?? 0.0) * 1.1,
+
+                        color: SmartpayColors.smartpayBlack
+
+                      ),
+
+                      children: [
+
+                        TextSpan(
+
+                          text: "yourself",
+
+                          style: context.textSize.titleLarge?.copyWith(
+
+                            fontWeight: FontWeight.bold,
+
+                            fontSize: (context.textSize.titleLarge?.fontSize ?? 0.0) * 1.1,
+
+                            color: SmartpayColors.smartpaySecondaryColor
+
+                          ),
+
+                        ),
+
+                      ]
 
                     ),
 
@@ -351,377 +162,164 @@ class _SetupProfileScreenState extends State<SetupProfileScreen> {
 
                 ),
 
-                SmartpayCard.simpleCard(
 
-                  context,
+                Form(
 
-                  horizontalPadding: 15,
+                  key: formKey,
 
-                  verticalPadding: 25,
+                  child: Column(
 
-                  child: Form(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
 
-                    key: formKey,
-                    
-                    child: Column( 
+                    children: [
 
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                    
-                      children: [
-
-                        Row(
-
-                          children: [
+                      TextInput(
                         
-                            SizedBox(
+                        controller: firstNameEditingController,
+                        
+                        textEntry: SmartpayTextStrings.firstname,
 
-                              width: defaultTargetPlatform == TargetPlatform.android ? Common.Ws(0.2) : Common.Ws(0.22),
+                        onChanged: (text){
 
-                              height: defaultTargetPlatform == TargetPlatform.android ? Common.Ws(0.2) : Common.Ws(0.22),
+                          setState(() { allFieldNotEmpty = isAllFieldsEmpty(); });
 
-                              child: ClipRRect(
+                        }
+                        
+                      ),
 
-                                borderRadius: BorderRadius.circular(100),
+                      TextInput(
+                        
+                        controller: lastNameEditingController,
+                        
+                        textEntry: SmartpayTextStrings.lastname,
 
-                                child: BlocBuilder<SetupProfileScreenBLoc, SetupProfileScreenState>(
-                                  
-                                  builder: (context, SetupProfileScreenState state) { 
-                                    
-                                    return state.uiProfileImageByte == null ? Image.asset(
+                        onChanged: (text){
 
-                                      SmartpayIconsAssets.userBig,
+                          setState(() { allFieldNotEmpty = isAllFieldsEmpty(); });
 
-                                      filterQuality: FilterQuality.high,
+                        }
+                        
+                      ),
 
-                                      fit: BoxFit.cover,
+                      TextInput(
+                        
+                        controller: userEditingController,
+                        
+                        textEntry: SmartpayTextStrings.username,
 
-                                      // width: 10,
+                        onChanged: (text){
 
-                                      // color: Colors.black,
+                          setState(() { allFieldNotEmpty = isAllFieldsEmpty(); });
 
-                                    )
-                                    
-                                    : 
-                                    
-                                    Image.memory( state.uiProfileImageByte! );
+                        }
+                        
+                      ),
 
-                                  }
+                      CountryInput(
 
-                                ),
+                        onChanged: (text){
+
+                          setState(() { allFieldNotEmpty = isAllFieldsEmpty(); });
+
+                        },
+
+                        onSelected: (country) {
+                          
+                          setState(() {
+
+                            selectedCountry = country;
+
+                          }); 
+
+                        },
+                        
+                      ),
+
+                      TextInput(
+                        
+                        controller: passwordEditingController,
+                        
+                        textEntry: SmartpayTextStrings.passwordInputLabel,
+
+                        obscureText: true,
+
+                        onChanged: (text){
+
+                          setState(() { allFieldNotEmpty = isAllFieldsEmpty(); });
+
+                        }
+                        
+                      ),
+
+                      const SizedBox(height: 15,),
+
+                      SmartpayButtons.plain(
+
+                        () {
+
+                          if( !allFieldNotEmpty ) {
+
+                            return;
+
+                          }
+
+                          if( (formKey.currentState?.validate() ?? false) ){
+
+                            formKey.currentState?.save();
+
+                            FocusManager.instance.primaryFocus?.unfocus();
+
+                            context.read<SetupProfileScreenBLoc>().add(
+
+                              SetupProfileScreenOnTapEvents(
+
+                                fullName: "${firstNameEditingController.text} ${lastNameEditingController.text}",
+
+                                username: userEditingController.text,
+
+                                email: emailRouteData!,
+
+                                country: selectedCountry!.code,
+
+                                password: passwordEditingController.text,
 
                               )
-                              
-                            ),
 
-                            SizedBox(
+                            );
 
-                              width: 15,
+                          }
 
-                            ),
-
-                            TextButton(
-
-                              style: TextButton.styleFrom(
-
-                                foregroundColor: SmartpayColors.smartpayPrimaryColor,
-
-                                backgroundColor: Colors.transparent,
-
-                                shape: RoundedRectangleBorder(
-
-                                  side: BorderSide(color: SmartpayColors.smartpayPrimaryColor),
-
-                                  borderRadius: BorderRadius.all( Radius.circular(7) )
-                                  
-                                ),
-
-                              ),
-
-                              onPressed: (){
-
-                                context.read<SetupProfileScreenBLoc>().add(SetupProfileScreenSelectProfileImage());
-
-                              },
-
-                              child: Text(
-
-                                SmartpayTextStrings.changePhoto,
-
-                                maxLines: 1,
-
-                                overflow: TextOverflow.ellipsis,
-
-                                style: Theme.of( Common.navigatorKey.currentContext! ).textTheme.bodyMedium?.copyWith(
-
-                                  color: SmartpayColors.smartpayPrimaryColor,
-
-                                  fontWeight: FontWeight.w500,
-
-                                )
-
-                              ),
-
-                            )
-
-                          ]
-
-                        ),
-
-
-                        //LIST OF INPUTS
-
-                        ...(
-
-                          allInputFields.map((e){ 
-                            
-                            switch (e.title) {
-
-                              case SmartpayTextStrings.dateOfBirth:
-
-                                return GestureDetector(
-
-                                  onTap: (){
-
-                                    showDialog(
-
-                                      barrierDismissible: true,
-
-                                      context: context, builder: (context) {
-
-                                        return Stack(
-
-                                          children: [
-                                        
-                                            GestureDetector(
-
-                                              onTap: () => Navigator.pop(context),
-                                              
-                                              child: Container(
-
-                                                color: Colors.transparent,
-
-                                              )
-                                              
-                                            ),
-
-                                            Center(
-
-                                              child: ColoredBox(
-
-                                                color: Colors.white,
-                                                
-                                                child: SizedBox(
-
-                                                  width: Common.Ws(0.8),
-
-                                                  height: Common.Hs(0.6),
-
-                                                  child: SfDateRangePicker(
-
-                                                    onSelectionChanged: ( arg ) => setState(() {
-                                                      
-                                                      DateTime dateTime  = arg.value as DateTime;
-
-                                                      e.inputController.text = DateFormat("yyyy-MM-dd").format( dateTime );
-
-                                                      print(e.inputController.text);
-
-                                                    }),
-                                                    
-                                                    selectionMode: DateRangePickerSelectionMode.single,
-
-                                                  ),
-
-                                                )
-
-                                              )
-
-                                            )
-
-                                          ]
-
-                                        );
-                                        
-                                      }
-                                      
-                                    );
-
-                                  },
-
-                                  child: TextInput(
-                                  
-                                    controller: e.inputController, 
-                                    
-                                    textEntry: "", 
-
-                                    validator: e.validator,
-                                    
-                                    labelText: e.title,
-
-                                    enabled: false,
-                                    
-                                  ),
-
-                                );
-
-                              case SmartpayTextStrings.phoneNextOfKin:
-
-                                return PhoneNumInput( 
-                    
-                                  controller: e.inputController, 
-                                  
-                                  textEntry: "",
-                                  
-                                  labelText: e.title
-                                  
-                                );
-                                    
-                              case SmartpayTextStrings.gender:
-
-                                return Padding(
-                                  
-                                  padding: const EdgeInsets.only( top: 25 ),
-                                  
-                                  child: SmartpayDropdownButton(
-
-                                    label: SmartpayTextStrings.gender,
-
-                                    inputController: e.inputController,
-                                  
-                                    items: _genders,
-                                    
-                                    // onChanged: (int value){
-
-                                    //   e.inputController.text = _genders.elementAt(value).title.toLowerCase();
-
-                                    // }
-                                    
-                                  )
-                                  
-                                );
-                                    
-                              case SmartpayTextStrings.bloodGroup:
-
-                                return Padding(
-                                  
-                                  padding: const EdgeInsets.only( top: 25 ),
-                                  
-                                  child: SmartpayDropdownButton(
-
-                                    label: SmartpayTextStrings.bloodGroup,
-
-                                    inputController: e.inputController,
-                                  
-                                    items: _bloodGroups, 
-                                    
-                                    // onChanged: (int value){
-
-                                    //   e.inputController.text = _bloodGroups.elementAt(value).title.toLowerCase();
-
-                                    // }
-                                    
-                                  )
-                                
-                                );
-                                    
-                              case SmartpayTextStrings.genotype:
-
-                                return Padding(
-                                  
-                                  padding: const EdgeInsets.only( top: 25 ),
-                                  
-                                  child: SmartpayDropdownButton(
-
-                                    label: SmartpayTextStrings.genotype,
-
-                                    inputController: e.inputController,
-                                  
-                                    items: _genotypes, 
-                                    
-                                    // onChanged: (int value){
-
-                                    //   e.inputController.text = _genotypes.elementAt(value).title.toLowerCase();
-
-                                    // }
-
-                                  )
-                                  
-                                );
-
-                              case SmartpayTextStrings.height:
-
-                                return TextInput(
-                                
-                                  controller: e.inputController, 
-                                  
-                                  textEntry: "", 
-                                  
-                                  labelText: e.title,
-
-                                  validator: e.validator,
-
-                                  keyboardType: TextInputType.number,
-                                  
-                                );
-
-                              case SmartpayTextStrings.weight:
-
-                                return TextInput(
-                                
-                                  controller: e.inputController, 
-                                  
-                                  textEntry: "", 
-                                  
-                                  labelText: e.title,
-
-                                  validator: e.validator,
-
-                                  keyboardType: TextInputType.number,
-                                  
-                                );
-
-                              default:
-
-                                return TextInput(
-                                
-                                  controller: e.inputController, 
-                                  
-                                  textEntry: "", 
-
-                                  validator: e.validator,
-                                  
-                                  labelText: e.title
-                                  
-                                );
-                            }
-
-
-                          })
-
-                        )
+                        },
                         
-                      ]
-                        
-                    )
+                        title: SmartpayTextStrings.continueWord,
+
+                        fillColor: !(allFieldNotEmpty) ? SmartpayColors.smartpayGray : null
+
+                      ),
+
+                      const SizedBox(
+
+                        height: 20,
+
+                      )
+
+                    ],
+
+                  )
                   
-                  ),
+                ),
 
-                )
-                
-              ]
-              
+              ],
+
             )
-            
-          )
-          
+
+          ),
+
         )
-        
-      )
       
+      ),
+
     );
 
-    
-
   }
-
 }

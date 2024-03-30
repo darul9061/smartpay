@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:smartpay/utils/common.dart';
 import 'package:smartpay/utils/constants.dart';
+import 'package:smartpay/utils/media_query.dart';
 
 class SmartpayButtons {
   
@@ -27,7 +28,7 @@ class SmartpayButtons {
 
       width: double.maxFinite,
 
-      height: defaultTargetPlatform == TargetPlatform.android?  48 : 52,
+      height: defaultTargetPlatform == TargetPlatform.android?  54 : 54,
 
       child: TextButton(
 
@@ -39,7 +40,7 @@ class SmartpayButtons {
 
           shape: const RoundedRectangleBorder(
 
-            borderRadius: BorderRadius.all( Radius.circular(7) )
+            borderRadius: BorderRadius.all( Radius.circular(15) )
 
           )
 
@@ -61,11 +62,13 @@ class SmartpayButtons {
 
           title!,
 
-          style: Theme.of( Common.navigatorKey.currentContext! ).textTheme.bodyMedium?.copyWith(
+          style: Common.navigatorKey.currentContext!.textSize.titleMedium?.copyWith(
 
             color: titleColor ?? Colors.white,
 
-            fontWeight: FontWeight.w500,
+            fontSize: 18,
+
+            fontWeight: FontWeight.w600,
 
           )
 

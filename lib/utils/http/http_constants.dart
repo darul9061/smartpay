@@ -6,15 +6,23 @@ class HttpConstants {
 
   static String protocol = "https://";
 
-  static const String devBaseUrl = "lpdosubi.com";
+  static const String devBaseUrl = "mobile-test-2d7e555a4f85.herokuapp.com/api/v1";
 
-  static const String baseUrl = "www.smartpay.com";
+  static const String baseUrl = "smart-pay-mobile.herokuapp.com/api/v1";
+
+  static String getVerifyEmailToken = "/auth/email";
+
+  static String verifyEmail = "/auth/email/verify";
+
+  static String setupProfile = "/auth/register";
+
+  static String login = "/auth/login";
+
+  static String dashboard = "/dashboard";
 
   static String terms = "/terms";
 
   static String policy = "/policy";
-
-  static String login = "/api/UsersAuths/Login/";
 
   static String signup = "/api/UsersAuths/";
 
