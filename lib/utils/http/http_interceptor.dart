@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:smartpay/models/response_models/expired_token_res_model.dart';
-import 'package:smartpay/models/response_models/refresh_token_res_model.dart';
 import 'package:smartpay/models/user_detail_model.dart';
 import 'package:smartpay/utils/common.dart';
 import 'package:smartpay/utils/constants.dart';
