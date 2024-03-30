@@ -336,6 +336,36 @@ class _VerificationScreenState extends State<VerificationScreen> {
                         
                       ),
 
+                      BlocBuilder<SignUpScreenBLoc, SignUpScreenState>(
+                        
+                        builder: (_, SignUpScreenState state){
+                          
+                          return Padding(
+                          
+                            padding: const EdgeInsets.fromLTRB(0, 28, 0, 48),
+
+                            child: Text(
+
+                              state.gottenVerifToken,
+
+                              textAlign: TextAlign.center,
+
+                              style: context.textSize.titleMedium?.copyWith(
+
+                                color: SmartpayColors.smartpayGray.withAlpha(200),
+
+                                fontWeight: FontWeight.bold
+
+                              ),
+
+                            )
+
+                          );
+
+                        }
+                        
+                      ),
+
                       SmartpayButtons.plain(
 
                         () {

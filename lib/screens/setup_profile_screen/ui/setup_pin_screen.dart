@@ -86,7 +86,7 @@ class _SetupPinScreenState extends State<SetupPinScreen> {
                   
                   child: Text(
 
-                    SmartpayTextStrings.setupPINtitle,
+                    (context.read<CentralBLoc>().setupPinScreenShouldCheckPin) ? "PIN Code" : SmartpayTextStrings.setupPINtitle,
 
                     style: context.textSize.titleLarge?.copyWith(
 

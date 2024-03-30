@@ -45,6 +45,8 @@ class SignUpScreenBLoc extends Bloc<SignUpScreenEvent, SignUpScreenState>{
 
     if(signupRes is! GetEmailVerifTokenResModel) return;
 
+    emit(state..gottenVerifToken = signupRes.data?.token ?? "");
+
     Navigator.pushReplacementNamed(Common.navigatorKey.currentContext!, VerificationScreen.routeName, arguments: event.email);
 
   }
