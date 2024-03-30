@@ -1,7 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:smartpay/components/buttons.dart';
-import 'package:smartpay/screens/login_screen/ui/login_screen.dart';
 import 'package:smartpay/screens/signup_screen/ui/signup_screen.dart';
 import 'package:smartpay/screens/welcome_screen/swipe_views/fast_transaction_swipe_view.dart';
 import 'package:smartpay/screens/welcome_screen/swipe_views/finance_app_swipe_view.dart';

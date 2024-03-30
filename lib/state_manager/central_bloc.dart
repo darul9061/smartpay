@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartpay/models/response_models/error_res_model.dart';
 import 'package:smartpay/models/response_models/home_res_model.dart';
-import 'package:smartpay/models/response_models/patient_details_res_models.dart';
 import 'package:smartpay/models/user_detail_model.dart';
 import 'package:smartpay/utils/constants.dart';
 import 'package:smartpay/utils/http/http_constants.dart';

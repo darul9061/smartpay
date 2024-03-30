@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartpay/models/user_detail_model.dart';
-import 'package:smartpay/screens/root_access_screens/root_access_screen.dart';
 import 'package:smartpay/screens/setup_profile_screen/ui/setup_pin_screen.dart';
 import 'package:smartpay/screens/welcome_screen/welcome_screen.dart';
 import 'package:smartpay/state_manager/central_bloc.dart';
